@@ -4,7 +4,8 @@
   "description": "JSX based template engine with types",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc --build",
+    "test": "jest"
   },
   "keywords": [
     "JSX",

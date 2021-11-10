@@ -10,6 +10,7 @@
         "declaration": true,
         "sourceMap": true,
         "rootDir": "./src",
+        "outDir": "dist",
         "composite": true,
         "strict": true,
         "moduleResolution": "node",
