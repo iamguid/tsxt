@@ -11,11 +11,7 @@ const defaultOptions: TransformerOptions = {
 	plugins: []
 };
 
-export async function compile(
-	fileName: string,
-	data: any,
-	options: Partial<TransformerOptions> = {}
-): Promise<babel.BabelFileResult | null> {
+export function compile(fileName: string, data: any, options: Partial<TransformerOptions> = {}): string | null {
 	const _options = {
 		...defaultOptions,
 		...options
@@ -38,5 +34,5 @@ export async function compile(
 			[TSXTPlugin, opts],
 			..._options.plugins
 		]
-	});
+    });
 }
