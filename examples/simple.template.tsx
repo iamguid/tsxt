@@ -1,5 +1,7 @@
 export default function (ctx: string) {
-    <templ>
-        {`Hello, ${ctx}`}
-    </templ>
+    return (
+        <templ>
+            {`Hello, ${ctx}`}
+        </templ>
+    )
 };

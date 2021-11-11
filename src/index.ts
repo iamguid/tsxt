@@ -4,6 +4,15 @@ import PluginJsxSyntax from '@babel/plugin-syntax-jsx';
 import PresetTypescript from '@babel/preset-typescript';
 import { TSXTPlugin, TSXTOptions } from './plugin';
 
+export interface VisitorOptions {
+    indentType: 'space' | 'tab';
+    indentSize: number;
+}
+
+export interface VisitorState {
+    opts: VisitorOptions;
+}
+
 export interface TransformerOptions {
 	plugins: babel.PluginObj<any>[];
 }

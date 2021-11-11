@@ -1,8 +1,7 @@
-import { Interface } from "readline";
 import iface from "./interface.template";
 
 export namespace InterfaceExample { export interface Iface { className: string; methods: Method[] } export interface Method {
-        methodName: string;
+        name: string;
         inputType: string;
         outputType: string;
     }
@@ -15,8 +14,8 @@ export namespace InterfaceExample { export interface Iface { className: string; 
 function main() {
     const ctx: InterfaceExample.Context = {
         interfaces: [
-            { className: 'IA', methods: [ { methodName: 'something', inputType: 'any', outputType: 'any' } ] },
-            { className: 'IB', methods: [ { methodName: 'something', inputType: 'any', outputType: 'any' } ] },
+            { className: 'IA', methods: [ { name: 'something', inputType: 'any', outputType: 'any' } ] },
+            { className: 'IB', methods: [ { name: 'something', inputType: 'any', outputType: 'any' } ] },
         ]
     }
 

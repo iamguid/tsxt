@@ -3,8 +3,8 @@
         "@babel/preset-typescript"
     ],
     "plugins": [
+        "../dist-lib/src/plugin.js",
         "@babel/plugin-syntax-typescript",
-        "@babel/plugin-transform-modules-commonjs",
-        "../dist-lib/src/plugin.js"
+        "@babel/plugin-transform-modules-commonjs"
     ]
 }

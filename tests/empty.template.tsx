@@ -1,1 +1,3 @@
-export default function (ctx: any) {}
+export default function generate(ctx: any) {}
+
+console.log(generate({}))
