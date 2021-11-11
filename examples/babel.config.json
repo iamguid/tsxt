@@ -1,0 +1,10 @@
+{
+    "presets": [
+        "@babel/preset-typescript"
+    ],
+    "plugins": [
+        "@babel/plugin-syntax-typescript",
+        "@babel/plugin-transform-modules-commonjs",
+        "../dist/src/plugin.js"
+    ]
+}

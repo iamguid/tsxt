@@ -7,7 +7,6 @@ import { handlers } from './handlers';
 export interface VisitorOptions {
     indentType: 'space' | 'tab';
     indentSize: number;
-    data: any;
 }
 
 export interface VisitorState {

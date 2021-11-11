@@ -7,3 +7,5 @@ export type TSXTOptions = VisitorOptions;
 export function TSXTPlugin(_context: typeof babel) {
     return { visitor: visitorFactory() } as babel.PluginObj;
 }
+
+export default TSXTPlugin;

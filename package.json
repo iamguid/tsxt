@@ -4,7 +4,10 @@
   "description": "JSX based template engine with types",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p ./tsconfig.json"
+    "clean": "rm -rf ./dist && rm -rf ./dist-examples",
+    "build": "npm run clean && npm run build:plugin && npm run build:examples",
+    "build:plugin": "tsc -p ./tsconfig.json",
+    "build:examples": "babel --config-file ./examples/babel.config.json --extensions .tsx,.ts --out-dir ./dist-exapmles ./examples"
   },
   "keywords": [
     "JSX",
@@ -15,6 +18,7 @@
   "author": "Vladislav Lebedev",
   "license": "MIT",
   "dependencies": {
+    "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.0",
     "@babel/plugin-syntax-jsx": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
@@ -25,6 +29,7 @@
     "typescript": "^4.4.4"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@types/node": "^16.11.7"
   }
 }

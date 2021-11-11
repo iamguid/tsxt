@@ -6,26 +6,14 @@ export type TagName
     | 'ln'
     | 'indent'
 
-export function template(props: { value: any; }): any {
-    return null;
-}
-
 export function isTemplateElement(node: NodePath) {
-    return getJSXElementName(node) === 'template';
-}
-
-export function ln() {
-    return null;
+    return getJSXElementName(node) === 'Template';
 }
 
 export function isLnElement(node: NodePath) {
-    getJSXElementName(node) === 'ln';
-}
-
-export function indent() {
-    return null;
+    getJSXElementName(node) === 'Ln';
 }
 
 export function isIndentElement(node: NodePath) {
-    getJSXElementName(node) === 'indent';
+    getJSXElementName(node) === 'Indent';
 }

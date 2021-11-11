@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as babel from '@babel/core';
 import PluginJsxSyntax from '@babel/plugin-syntax-jsx';
 import PresetTypescript from '@babel/preset-typescript';
@@ -11,7 +12,10 @@ const defaultOptions: TransformerOptions = {
 	plugins: []
 };
 
-export function compile(fileName: string, data: any, options: Partial<TransformerOptions> = {}): string | null {
+export function compile(
+	fileName: string,
+	options: Partial<TransformerOptions> = {}
+) {
 	const _options = {
 		...defaultOptions,
 		...options
@@ -21,10 +25,9 @@ export function compile(fileName: string, data: any, options: Partial<Transforme
         ...defaultOptions,
         indentType: 'space',
         indentSize: 4,
-		data
 	};
 
-	return babel.transformFileSync(fileName, {
+	const transformResult = babel.transformFileSync(fileName, {
 		ast: true,
 		presets: [
 			PresetTypescript
@@ -35,4 +38,8 @@ export function compile(fileName: string, data: any, options: Partial<Transforme
 			..._options.plugins
 		]
     });
+
+    if (transformResult?.code) {
+        fs.writeFileSync(`${fileName}.js`, transformResult.code)
+    }
 }

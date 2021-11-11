@@ -6,15 +6,12 @@ import { VisitorState } from './visitor';
 export type Handler = (path: NodePath<JSXElement>, state: VisitorState) => void;
 
 const handleTemplateElement = (path: NodePath<JSXElement>, state: VisitorState) => {
-
 }
 
 const handleLnElement = (path: NodePath<JSXElement>, state: VisitorState) => {
-
 }
 
 const handleIndentElement = (path: NodePath<JSXElement>, state: VisitorState) => {
-
 }
 
 export const handlers = new Map<TagName, Handler>([

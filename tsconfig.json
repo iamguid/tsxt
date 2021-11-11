@@ -17,10 +17,13 @@
         "typeRoots": [
             "node_modules/@types"
         ],
+        "paths": {
+            "*": ["./types/*.d.ts"]
+        },
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
     },
     "exclude": [
         "node_modules"
