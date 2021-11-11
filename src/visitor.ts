@@ -2,7 +2,8 @@ import { NodePath } from '@babel/traverse';
 import { JSXElement, Node } from '@babel/types';
 import { UnexpectedType } from './errors';
 import { getJSXElementName } from './helpers';
-import { handlers } from './handlers';
+import { handlers, jsxHandlers } from './handlers';
+import { TagName } from './tags';
 
 export interface VisitorOptions {
     indentType: 'space' | 'tab';
@@ -14,16 +15,18 @@ export interface VisitorState {
 }
 
 export function visitorFactory() {
-    return {
-        JSXElement(path: NodePath<JSXElement>, state: VisitorState) {
-            const name = getJSXElementName(path);
+    return Object.assign(handlers, {
+        'JSXElement': (path: NodePath<JSXElement>, state: VisitorState) => {
+            const name = getJSXElementName(path) as TagName;
 
-            if (!handlers.has(name)) {
+            console.warn(name)
+
+            if (!(name in jsxHandlers)) {
                 return;
             }
 
             try {
-                const handler = handlers.get(name)!;
+                const handler = jsxHandlers[name];
                 handler(path, state);
 
                 return;
@@ -35,5 +38,5 @@ export function visitorFactory() {
                 throw e;
             }
         }
-    };
+    });
 }

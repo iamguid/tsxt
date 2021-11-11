@@ -1,5 +1,5 @@
 export default function (ctx: string) {
-    <template>
+    <templ>
         {`Hello, ${ctx}`}
-    </template>
+    </templ>
 };

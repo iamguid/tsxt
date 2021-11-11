@@ -1,20 +1,12 @@
-import { NodePath } from '@babel/traverse';
-import { ArrayExpression, binaryExpression, BinaryExpression, emptyStatement, Expression, expressionStatement, ExpressionStatement, isArrowFunctionExpression, isBlockStatement, isCallExpression, isExpression, isExpressionStatement, isJSXElement, isJSXExpressionContainer, isJSXText, isTemplateLiteral, JSXElement, JSXExpressionContainer, Node, returnStatement, stringLiteral, TemplateLiteral } from '@babel/types';
-import { isArrowFunction, isJsxText } from 'typescript';
-import { TagName } from './tags';
-import { VisitorState } from './visitor';
-
-export type Handler<TNode extends Node> = (path: NodePath<TNode>, state: VisitorState) => void;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.jsxHandlers = exports.handlers = void 0;
 // const generateTemplate = (path: NodePath<JSXElement>, state: VisitorState) => {
 //     const nodesStack: Node[] = [...path.node.children];
 //     const resultExpressions: Node[] = [];
-
 //     while (nodesStack.length > 0) {
 //         const node = nodesStack.shift()!;
-
 //         console.warn(node.type);
-
 //         if (isJSXText(node)) {
 //             continue;
 //         } else if (isTemplateLiteral(node)) {
@@ -33,28 +25,21 @@ export type Handler<TNode extends Node> = (path: NodePath<TNode>, state: Visitor
 //             continue;
 //         }
 //     }
-
 //     return resultExpressions; 
 // }
-
-
-const handleJSXTemplElement = (path: NodePath<JSXElement>, state: VisitorState) => {
-}
-
-const handleJSXLnElement = (path: NodePath<JSXElement>, state: VisitorState) => {
-}
-
-const handleJSXIndentElement = (path: NodePath<JSXElement>, state: VisitorState) => {
-}
-
-const handleJSXCbElement = (path: NodePath<JSXElement>, state: VisitorState) => {
-}
-
-export const handlers: Partial<Record<Node['type'], Handler<Node>>> = {};
-
-export const jsxHandlers: Record<TagName, Handler<JSXElement>> = {
+const handleJSXTemplElement = (path, state) => {
+};
+const handleJSXLnElement = (path, state) => {
+};
+const handleJSXIndentElement = (path, state) => {
+};
+const handleJSXCbElement = (path, state) => {
+};
+exports.handlers = {};
+exports.jsxHandlers = {
     'templ': handleJSXTemplElement,
     'indent': handleJSXIndentElement,
     'ln': handleJSXLnElement,
     'cb': handleJSXCbElement,
 };
+//# sourceMappingURL=handlers.js.map

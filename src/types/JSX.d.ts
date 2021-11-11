@@ -1,7 +1,8 @@
 namespace JSX {
     export interface IntrinsicElements {
-        template: any;
+        templ: any;
         ln: any;
         indent: any;
+        cb: any;
     }
 }

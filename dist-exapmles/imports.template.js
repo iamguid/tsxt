@@ -6,15 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = _default;
 
 function _default(ctx) {
-  {
-    `import * as a from "a"`;
-  }
-  {
-    `import * as b from "b"`;
-  }
-  {
-    ctx;
-  }
+  <templ>
+        {`import * as globalA from "globalA"`}
+        {`import * as globalB from "globalB"`}
+        {ctx.imports.map(imprt => {
+      {
+        `import * as ${imprt.name} from "${imprt.path}"`;
+      }
+    })}
+    </templ>;
 }
-
-;

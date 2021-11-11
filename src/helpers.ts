@@ -2,7 +2,7 @@ import { NodePath } from "@babel/traverse";
 import { Node } from "@babel/types";
 import generate from '@babel/generator';
 
-export function getJSXElementName(node: NodePath<any> | Node) {
+export function getJSXElementName(node: NodePath<any> | Node): string {
     return (node instanceof NodePath)
         ? node.node.openingElement.name.name
         // @ts-ignore

@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = _default;
 
 function _default(ctx) {
-  <template>
+  <templ>
         {`Hello, ${ctx}`}
-    </template>;
+    </templ>;
 }
 
 ;

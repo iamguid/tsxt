@@ -1,8 +1,8 @@
 import simple from './simple.template';
 
 function main() {
-	const data = "World"
-	const result = simple(data);
+	const ctx = "World"
+	const result = simple(ctx);
 	console.log(result);
 }
 

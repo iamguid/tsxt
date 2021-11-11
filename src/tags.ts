@@ -2,18 +2,23 @@ import { NodePath } from '@babel/traverse';
 import { getJSXElementName } from './helpers';
 
 export type TagName 
-    = 'template'
+    = 'templ'
     | 'ln'
     | 'indent'
+    | 'cb'
 
-export function isTemplateElement(node: NodePath) {
-    return getJSXElementName(node) === 'Template';
+export function isTemplElement(node: NodePath) {
+    return getJSXElementName(node) === 'templ';
 }
 
 export function isLnElement(node: NodePath) {
-    getJSXElementName(node) === 'Ln';
+    getJSXElementName(node) === 'ln';
 }
 
 export function isIndentElement(node: NodePath) {
-    getJSXElementName(node) === 'Indent';
+    getJSXElementName(node) === 'indent';
+}
+
+export function isCbElement(node: NodePath) {
+    getJSXElementName(node) === 'cb';
 }
