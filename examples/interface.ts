@@ -1,13 +1,7 @@
 import { Interface } from "readline";
 import iface from "./interface.template";
 
-export namespace InterfaceExample {
-    export interface Iface {
-        className: string;
-        methods: Method[]
-    }
-
-    export interface Method {
+export namespace InterfaceExample { export interface Iface { className: string; methods: Method[] } export interface Method {
         methodName: string;
         inputType: string;
         outputType: string;

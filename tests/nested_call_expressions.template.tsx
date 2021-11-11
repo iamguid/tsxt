@@ -1,7 +1,18 @@
 export default function (ctx: any) {
-    {['test1'].map(item1 => {
-        {['test2'].forEach(item2 => {
-            {'test3'}
-        });}
-    })}
+    <templ>
+        {['test1'].map(item1 => {
+            let test: string = '';
+            {['test2'].forEach(item2 => {
+                test = item2;
+
+                return (
+                    <templ>
+                        {`${item1}`}
+                        {`${test}`}
+                        {'test3'}
+                    </templ>
+                )
+            })}
+        })}
+    </templ>
 }

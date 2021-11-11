@@ -13,9 +13,11 @@ function Imports({ imports }: { imports: any[] }) {
         {`import * jspb from "google-protobuf"`}
         <ln/>
 
-        {imports.map((imprt: any) => {
-            {`import * ${imprt.name} from "${imprt.path}"`}
-        })}
+        {imports.map((imprt: any) => (
+            <templ>
+                {`import * ${imprt.name} from "${imprt.path}"`}
+            </templ>
+        ))}
         <ln/>
     </templ>
 }
@@ -24,22 +26,28 @@ function Client({ client }: { client: any }) {
     <templ>
         {`export interface ${client.interfaceClassName}`}
         <cb>
-        {client.methods.map((method: any) => {
-            if (method.isServerStreaming) {
-                {`${method.methodName}}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<${method.outputType}>`}
-            } else {
-                {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => Promise<${method.outputType}>`}
-            }
-        })}
+            {client.methods.map((method: any) => {
+                if (method.isServerStreaming) {
+                    <templ>
+                        {`${method.methodName}}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<${method.outputType}>`}
+                    </templ>
+                } else {
+                    <templ>
+                        {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => Promise<${method.outputType}>`}
+                    </templ>
+                }
+            })}
         </cb>
 
         {`export class ${client.clientClassName} extends ${client.interfaceClassName}`}
         <cb>
         {client.methods.map((method: any) => {
-            {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}>`}
-            <cb>
-                {`return void;`}
-            </cb>
+            <templ>
+                {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}>`}
+                <cb>
+                    {`return void;`}
+                </cb>
+            </templ>
         })}
         </cb>
     </templ>

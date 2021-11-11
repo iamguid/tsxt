@@ -15,11 +15,9 @@ export interface VisitorState {
 }
 
 export function visitorFactory() {
-    return Object.assign(handlers, {
+    return {
         'JSXElement': (path: NodePath<JSXElement>, state: VisitorState) => {
             const name = getJSXElementName(path) as TagName;
-
-            console.warn(name)
 
             if (!(name in jsxHandlers)) {
                 return;
@@ -38,5 +36,5 @@ export function visitorFactory() {
                 throw e;
             }
         }
-    });
+    }
 }
