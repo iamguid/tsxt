@@ -4,10 +4,11 @@
   "description": "JSX based template engine with types",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf ./dist && rm -rf ./dist-examples",
-    "build": "npm run clean && npm run build:plugin && npm run build:examples",
+    "clean": "rm -rf ./dist-lib && rm -rf ./dist-examples && rm -rf ./dist-tests",
+    "build": "npm run clean && npm run build:plugin && npm run build:examples && npm run build:tests",
     "build:plugin": "tsc -p ./tsconfig.json",
-    "build:examples": "babel --config-file ./examples/babel.config.json --extensions .tsx,.ts --out-dir ./dist-exapmles ./examples"
+    "build:examples": "babel --config-file ./examples/babel.config.json --extensions .tsx,.ts --out-dir ./dist-examples ./examples",
+    "build:tests": "babel --config-file ./tests/babel.config.json --extensions .tsx,.ts --out-dir ./dist-tests ./tests"
   },
   "keywords": [
     "JSX",

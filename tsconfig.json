@@ -11,7 +11,7 @@
         "sourceMap": true,
         "composite": true,
         "sourceRoot": "./src",
-        "outDir": "./dist",
+        "outDir": "./dist-lib",
         "strict": true,
         "moduleResolution": "node",
         "typeRoots": [
