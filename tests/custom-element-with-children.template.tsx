@@ -1,7 +1,7 @@
 const CustomWithChildren = (props: any, children: any[]) => (
     <templ>
         {children}
-        {`test2`}
+        {`inside`}
     </templ>
 )
 
@@ -11,6 +11,13 @@ export default () => (
       {`test1`}
       {`test2`}
       {[3, 4].map(item => "test" + item.toString()).join('')}
+      <CustomWithChildren>
+        <templ>
+          {`test5`}
+          {`test6`}
+          {[7, 8].map(item => "test" + item.toString()).join('')}
+        </templ>
+      </CustomWithChildren>
     </CustomWithChildren>
   </templ>
 )

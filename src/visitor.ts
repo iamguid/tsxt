@@ -6,6 +6,7 @@ import {
   callExpression,
   Expression,
   identifier,
+  isBinaryExpression,
   isExpression,
   isJSXElement,
   isJSXEmptyExpression,
@@ -14,16 +15,11 @@ import {
   isJSXSpreadAttribute,
   isStringLiteral,
   JSXElement,
-  jSXExpressionContainer,
   JSXExpressionContainer,
   jsxExpressionContainer,
-  JSXFragment,
-  JSXSpreadChild,
-  JSXText,
   ObjectExpression,
   objectExpression,
   objectProperty,
-  ObjectProperty,
   StringLiteral,
   stringLiteral,
 } from "@babel/types";
@@ -47,7 +43,7 @@ interface ObjectArgs {
   value: StringLiteral | Expression;
 }
 
-const buildConcatinationExpression = (
+const buildConcatinationExpressions = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
 ): ConcationationExpression[] => {
@@ -77,7 +73,7 @@ const buildResultExpression = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
 ): Expression => {
-  const concationationExpressions = buildConcatinationExpression(path, state);
+  const concationationExpressions = buildConcatinationExpressions(path, state);
 
   let resultExpression: BinaryExpression | Expression = stringLiteral("");
 
@@ -140,9 +136,21 @@ const handleJSXCustomElementEnter = (path: NodePath<JSXElement>) => {
 
 const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
   const childrenArray: Expression[] = path.node.children
-    .filter(child => isJSXExpressionContainer(child))
-    .filter(child => isExpression((child as JSXExpressionContainer).expression))
-    .map(child => (child as JSXExpressionContainer).expression as Expression);
+    .filter(child => isJSXExpressionContainer(child) || isBinaryExpression(child))
+    .filter(child => {
+      if (isJSXExpressionContainer(child)) {
+        return isExpression((child as JSXExpressionContainer).expression)
+      }
+
+      return true;
+    })
+    .map(child => {
+      if (isJSXExpressionContainer(child)) {
+        return (child as JSXExpressionContainer).expression as Expression
+      }
+
+      return child as Expression;
+    });
 
   const params: ObjectArgs[] = path.node.openingElement.attributes.map(
     (attr) => {
