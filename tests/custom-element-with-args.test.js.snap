@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`template generates correctly 1`] = `"test1test2test3"`;

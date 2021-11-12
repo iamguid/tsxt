@@ -1,10 +1,12 @@
 import { Node, NodePath, Visitor } from "@babel/core";
 import {
+  arrayExpression,
   BinaryExpression,
   binaryExpression,
   callExpression,
   Expression,
   identifier,
+  isExpression,
   isJSXElement,
   isJSXEmptyExpression,
   isJSXExpressionContainer,
@@ -12,8 +14,13 @@ import {
   isJSXSpreadAttribute,
   isStringLiteral,
   JSXElement,
+  jSXExpressionContainer,
   JSXExpressionContainer,
   jsxExpressionContainer,
+  JSXFragment,
+  JSXSpreadChild,
+  JSXText,
+  ObjectExpression,
   objectExpression,
   objectProperty,
   ObjectProperty,
@@ -40,11 +47,11 @@ interface ObjectArgs {
   value: StringLiteral | Expression;
 }
 
-const makeExpression = (
+const buildConcatinationExpression = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
-): Expression => {
-  const resultObjects: ConcationationExpression[] = path.node.children
+): ConcationationExpression[] => {
+  return path.node.children
     .map((child, i) => {
       const childPath = path.get(`children.${i}`) as NodePath<Node>;
       const alreadyIndented = Boolean(childPath.getData("alreadyIndented"));
@@ -64,6 +71,13 @@ const makeExpression = (
         alreadyIndented: obj.alreadyIndented,
       };
     });
+}
+
+const buildResultExpression = (
+  path: NodePath<JSXElement>,
+  state: TSXTPluginOptions
+): Expression => {
+  const concationationExpressions = buildConcatinationExpression(path, state);
 
   let resultExpression: BinaryExpression | Expression = stringLiteral("");
 
@@ -74,7 +88,7 @@ const makeExpression = (
 
   const symbols = indentSymbol.repeat(indent * state.opts.indentSize);
 
-  resultObjects.forEach((obj) => {
+  concationationExpressions.forEach((obj) => {
     const addNewline =
       obj.expression.type === "TemplateLiteral" ||
       obj.expression.type === "StringLiteral";
@@ -99,7 +113,7 @@ const handleJSXTemplElementExit = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
 ) => {
-  const resultExpression = makeExpression(path, state);
+  const resultExpression = buildResultExpression(path, state);
   path.replaceWith(resultExpression);
 };
 
@@ -115,13 +129,21 @@ const handleJSXIndentElementExit = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
 ) => {
-  const resultExpression = makeExpression(path, state);
+  const resultExpression = buildResultExpression(path, state);
   path.replaceWith(jsxExpressionContainer(resultExpression));
   path.setData("alreadyIndented", true);
   indent--;
 };
 
 const handleJSXCustomElementEnter = (path: NodePath<JSXElement>) => {
+};
+
+const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
+  const childrenArray: Expression[] = path.node.children
+    .filter(child => isJSXExpressionContainer(child))
+    .filter(child => isExpression((child as JSXExpressionContainer).expression))
+    .map(child => (child as JSXExpressionContainer).expression as Expression);
+
   const params: ObjectArgs[] = path.node.openingElement.attributes.map(
     (attr) => {
       if (isJSXSpreadAttribute(attr)) {
@@ -158,19 +180,17 @@ const handleJSXCustomElementEnter = (path: NodePath<JSXElement>) => {
     }
   );
 
-  const objectProperties: ObjectProperty[] = params.map((param) => {
+  const paramsObjectExpression: ObjectExpression = objectExpression(params.map((param) => {
     return objectProperty(stringLiteral(param.name), param.value);
-  });
-  const object = objectExpression(objectProperties);
+  }));
+
+  const childrenArrayExpression = arrayExpression(childrenArray);
 
   const elementName = getJSXElementName(path);
-  path.replaceWith(
-    jsxExpressionContainer(callExpression(identifier(elementName), [object]))
-  );
-};
 
-const handleJSXCustomElementExit = () => {
-  throw Error("Not implemented");
+  path.replaceWith(
+    jsxExpressionContainer(callExpression(identifier(elementName), [paramsObjectExpression, childrenArrayExpression]))
+  );
 };
 
 export const handlers: Record<string, Handler<JSXElement>> = {
