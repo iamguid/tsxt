@@ -5,12 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "rm -rf ./dist-tests && npm run build:tests && jest",
-    "clean": "rm -rf ./dist-lib && rm -rf ./dist-examples && rm -rf ./dist-tests",
+    "clean": "rm -rf ./dist-lib && rm -rf ./dist-tests",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "prettier": "prettier -c .",
-    "build": "npm run clean && npm run build:plugin && npm run build:examples && npm run build:tests",
+    "build": "npm run clean && npm run build:plugin && npm run build:tests",
     "build:plugin": "tsc -p ./tsconfig.json",
-    "build:examples": "babel --config-file ./examples/babel.config.json --extensions .tsx,.ts --out-dir ./dist-examples ./examples",
     "build:tests": "babel --config-file ./tests/babel.config.json --extensions .tsx,.ts --out-dir ./dist-tests ./tests"
   },
   "keywords": [
