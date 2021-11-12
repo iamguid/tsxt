@@ -1,5 +1,6 @@
 import { Node, NodePath, Visitor } from "@babel/core"
-import { BinaryExpression, binaryExpression, callExpression, Expression, identifier, isExpression, isJSXExpressionContainer, JSXElement, JSXExpressionContainer, jsxExpressionContainer, memberExpression, stringLiteral } from "@babel/types";
+import { BinaryExpression, binaryExpression, callExpression, Expression, Identifier, identifier, isExpression, isJSXElement, isJSXEmptyExpression, isJSXExpressionContainer, isJSXFragment, isJSXSpreadAttribute, isStringLiteral, JSXElement, JSXExpressionContainer, jsxExpressionContainer, memberExpression, objectExpression, objectPattern, objectProperty, ObjectProperty, StringLiteral, stringLiteral } from "@babel/types";
+import { symbolName } from "typescript";
 import { TSXTOptions, TSXTPluginOptions } from "./";
 import { getJSXElementName } from "./helpers";
 
@@ -11,6 +12,11 @@ interface ConcationationExpression {
     expression: Expression;
     hasIndent: boolean;
     noNewline: boolean;
+}
+
+interface ObjectArgs {
+    name: string,
+    value: (StringLiteral | Expression)
 }
 
 const makeExpression = (path: NodePath<JSXElement>, state: TSXTPluginOptions): Expression => {
@@ -61,7 +67,7 @@ const makeExpression = (path: NodePath<JSXElement>, state: TSXTPluginOptions): E
 
 const handleJSXTemplElementExit = (path: NodePath<JSXElement>, state: TSXTPluginOptions) => {
     const resultExpression = makeExpression(path, state);
-    path.replaceWith(callExpression(memberExpression(resultExpression, identifier("trim")), []))
+    path.replaceWith(resultExpression)
 }
 
 const handleJSXLnElementEnter = (path: NodePath<JSXElement>) => {
@@ -99,13 +105,65 @@ const handleJSXCbElementExit = (path: NodePath<JSXElement>, state: TSXTPluginOpt
     indent--;
 }
 
+const handleJSXCustomElementEnter = (path: NodePath<JSXElement>) => {
+    const params: ObjectArgs[] = path.node.openingElement.attributes
+        .map(attr => {
+            if (isJSXSpreadAttribute(attr)) {
+                throw new Error('TSXT does not support spread attributes')
+            }
+
+            if (isJSXElement(attr.value)) {
+                throw new Error('TSXT does not support JSX elements')
+            }
+
+            if (isJSXFragment(attr.value)) {
+                throw new Error('TSXT does not support JSX fragments')
+            }
+
+            if (isJSXElement(attr.value)) {
+                throw new Error('TSXT does not support JSX elements')
+            }
+
+            const name = attr.name.name as string;
+
+            if (isStringLiteral(attr.value)) {
+                return { name, value: attr.value };
+            }
+
+            if (isJSXExpressionContainer(attr.value)) {
+                if (isJSXEmptyExpression(attr.value.expression)) {
+                    throw new Error('TSXT does not support empty expressions')
+                }
+
+                return { name, value: attr.value.expression };
+            }
+
+            throw new Error(`TSXT does not support ${attr.type}`)
+        });
+
+    const objectProperties: ObjectProperty[] = params.map(param => {
+        return objectProperty(stringLiteral(param.name), param.value)
+    })
+    const object = objectExpression(objectProperties);
+
+    const elementName = getJSXElementName(path);
+    path.replaceWith(jsxExpressionContainer(callExpression(identifier(elementName), [object])));
+}
+
+const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
+    console.log("YEY exit", getJSXElementName(path))
+}
+
 export const handlers: Record<string, Handler<JSXElement>> = {
+    'templ.enter': () => undefined,
     'templ.exit': handleJSXTemplElementExit,
     'indent.enter': handleJSXIndentElementEnter,
     'indent.exit': handleJSXIndentElementExit,
     'ln.enter': handleJSXLnElementEnter,
     'cb.enter': handleJSXCbElementEnter,
     'cb.exit': handleJSXCbElementExit,
+    'custom.enter': handleJSXCustomElementEnter,
+    'custom.exit': handleJSXCustomElementEnter,
 };
 
 const visitor: Visitor<TSXTPluginOptions> = {
@@ -115,6 +173,8 @@ const visitor: Visitor<TSXTPluginOptions> = {
 
             if (name in handlers) {
                 handlers[name](path as NodePath<JSXElement>, state);
+            } else {
+                handlers['custom.enter'](path as NodePath<JSXElement>, state);
             }
         },
         exit: (path: NodePath<JSXElement>, state: TSXTPluginOptions) => {
@@ -122,6 +182,8 @@ const visitor: Visitor<TSXTPluginOptions> = {
 
             if (name in handlers) {
                 handlers[name](path as NodePath<JSXElement>, state);
+            } else {
+                handlers['custom.exit'](path as NodePath<JSXElement>, state);
             }
         }
     }
