@@ -17,6 +17,9 @@ function main() {
             { name: "a", path: "./a" },
             { name: "b", path: "./b" },
             { name: "c", path: "./c" },
+            { name: "d", path: "./d" },
+            { name: "e", path: "./e" },
+            { name: "f", path: "./f" },
         ]
     }
 

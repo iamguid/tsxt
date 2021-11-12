@@ -4,7 +4,6 @@ function Header() {
   return (
     <templ>
       {`// "GENERATED CODE -- DO NOT EDIT!"`}
-      <ln />
     </templ>
   )
 }
@@ -28,10 +27,10 @@ function Imports({ imports }: { imports: RealisticExample.Import[] }) {
 function Client({ client }: { client: RealisticExample.Client }) {
   return (
     <templ>
-      {`export interface ${client.interfaceClassName}`}
-      <cb>
-        {client.methods.map(method => {
-          return method.isServerStreaming ? (
+      {`export interface ${client.interfaceClassName} {`}
+      <indent>
+        {client.methods.map(method => (
+          method.isServerStreaming ? (
             <templ>
               {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<${method.outputType}>;`}
             </templ>
@@ -39,23 +38,26 @@ function Client({ client }: { client: RealisticExample.Client }) {
             <templ>
               {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => Promise<${method.outputType}>;`}
             </templ>
-          );
-        }).join('')}
-      </cb>
+          )
+        )).join('')}
+      </indent>
+      {`}`}
 
       <ln/>
 
-      {`export class ${client.clientClassName} extends ${client.interfaceClassName}`}
-      <cb>
+      {`export class ${client.clientClassName} extends ${client.interfaceClassName} {`}
+      <indent>
         {client.methods.map(method => (
           <templ>
-            {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}>`}
-            <cb>
+            {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}> {`}
+            <indent>
               {`return void;`}
-            </cb>
+            </indent>
+            {`}`}
           </templ>
         )).join('')}
-      </cb>
+      </indent>
+      {`}`}
     </templ>
   );
 }
@@ -77,7 +79,9 @@ export default function (ctx: RealisticExample.Context) {
   return (
     <templ>
       <Header />
+      <ln/>
       <Imports imports={ctx.imports} />
+      <ln/>
       <Clients clients={ctx.clients} />
     </templ>
   );
