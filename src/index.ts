@@ -4,7 +4,9 @@ import visitor from './visitor';
 
 export interface TSXTOptions {
     indentType: 'space' | 'tab';
-    indentSize: number;
+	indentSize: number;
+	codeblockStart: string,
+	codeblockEnd: string,
 }
 
 export interface TSXTPluginOptions {
@@ -14,6 +16,8 @@ export interface TSXTPluginOptions {
 export const defaultOptions: TSXTOptions = {
 	indentType: 'space',
 	indentSize: 4,
+	codeblockStart: '{',
+	codeblockEnd: '}',
 }
 
 export default declare<TSXTPluginOptions, babel.PluginObj<any>>((api) => {

@@ -7,14 +7,23 @@ export type Handler<TNode extends Node> = (path: NodePath<TNode>, state: TSXTPlu
 
 let indent = 0;
 
+interface ConcationationExpression {
+    expression: Expression;
+    hasIndent: boolean;
+    noNewline: boolean;
+}
+
 const makeExpression = (path: NodePath<JSXElement>, state: TSXTPluginOptions): Expression => {
-    const resultObjects: { expression: Expression, hasIndent: boolean }[] = path.node.children
+    const resultObjects: ConcationationExpression[] = path.node.children
         .map((child, i) => {
-            const hasIndent = Boolean((path.get(`children.${i}`) as NodePath<Node>).getData('hasIndent'));
+            const childPath = path.get(`children.${i}`) as NodePath<Node>;
+            const hasIndent = Boolean(childPath.getData('hasIndent'));
+            const noNewline = Boolean(childPath.getData('noNewline'));
 
             return {
                 child,
-                hasIndent
+                hasIndent,
+                noNewline
             };
         })
         .filter(obj => {
@@ -23,7 +32,8 @@ const makeExpression = (path: NodePath<JSXElement>, state: TSXTPluginOptions): E
         .map(obj => {
             return {
                 expression: (obj.child as JSXExpressionContainer).expression as Expression,
-                hasIndent: obj.hasIndent
+                hasIndent: obj.hasIndent,
+                noNewline: obj.noNewline
             }
         });
 
@@ -32,17 +42,19 @@ const makeExpression = (path: NodePath<JSXElement>, state: TSXTPluginOptions): E
     const indentSymbol = state.opts.indentType == 'space' ? String.fromCharCode(160) : String.fromCharCode(9);
     const symbols = indentSymbol.repeat(indent * state.opts.indentSize);
 
-    for (const obj of resultObjects) {
-
+    resultObjects.forEach((obj, i) => {
         const spased = obj.hasIndent || indent === 0 
             ? obj.expression 
             : binaryExpression("+", stringLiteral(symbols), obj.expression);
 
-        const expr = binaryExpression("+", resultExpression, spased);
-        const lined = binaryExpression("+", expr, stringLiteral("\n"));
+        const lined = obj.noNewline || i == 0
+            ? spased
+            : binaryExpression("+", stringLiteral("\n"), spased);
 
-        resultExpression = lined;
-    }
+        const expr = binaryExpression("+", resultExpression, lined);
+
+        resultExpression = expr;
+    })
 
     return resultExpression;
 }
@@ -73,8 +85,17 @@ const handleJSXCbElementEnter = (path: NodePath<JSXElement>) => {
 
 const handleJSXCbElementExit = (path: NodePath<JSXElement>, state: TSXTPluginOptions) => {
     const resultExpression = makeExpression(path, state);
-    path.replaceWith(jsxExpressionContainer(resultExpression));
-    path.setData('hasIndent', true);
+
+    const nodesPaths = path.replaceWithMultiple([
+        jsxExpressionContainer(stringLiteral(" " + state.opts.codeblockStart)),
+        jsxExpressionContainer(resultExpression),
+        jsxExpressionContainer(stringLiteral(state.opts.codeblockEnd)),
+    ]);
+
+    nodesPaths[0].setData('noNewline', true);
+    nodesPaths[0].setData('hasIndent', true);
+    nodesPaths[1].setData('hasIndent', true);
+
     indent--;
 }
 

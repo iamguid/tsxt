@@ -3,7 +3,7 @@
         "@babel/preset-typescript"
     ],
     "plugins": [
-        ["../dist-lib/src/index.js", { "indentType": "space", "indentSize": 4 }],
+        ["../dist-lib/src/index.js", { "indentType": "space", "indentSize": 4, "codeblockStart": "{", "codeblockEnd": "}" }],
         "@babel/plugin-syntax-typescript",
         "@babel/plugin-transform-modules-commonjs"
     ]
