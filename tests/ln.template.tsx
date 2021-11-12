@@ -1,15 +1,14 @@
 export default function generate(ctx: any) {
-    return (
-        <templ>
-            {'test1'}
-            <ln />
-            {'test2'}
-            <ln />
-            <ln />
-            {'test3'}
-        </templ>
-    )
-
+  return (
+    <templ>
+      {"test1"}
+      <ln />
+      {"test2"}
+      <ln />
+      <ln />
+      {"test3"}
+    </templ>
+  );
 }
 
-console.log({})
+console.log({});

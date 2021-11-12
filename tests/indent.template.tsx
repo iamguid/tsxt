@@ -1,21 +1,20 @@
-export default function generate(ctx: any) {
-    return (
-        <templ>
-            {'test1'}
-            <indent>
-                {'test2'}
-            </indent>
-            <indent>
-                {'test3'}
-                <indent>
-                    {'test4'}
-                    <ln />
-                    {'test5'}
-                    {'test6'}
-                </indent>
-            </indent>
-        </templ>
-    )
+export default function generate() {
+  return (
+    <templ>
+      {"line 1"}
+      <indent>{"line 2"}</indent>
+      <indent>
+        {"line 3"}
+        <indent>
+          {"line 4"}
+          <ln />
+          {"line 5"}
+          {"line 6"}
+        </indent>
+        {"line 7"}
+      </indent>
+    </templ>
+  );
 }
 
-console.log(generate({}))
+console.log(generate());

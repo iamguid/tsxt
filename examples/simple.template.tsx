@@ -1,7 +1,3 @@
 export default function (ctx: string) {
-    return (
-        <templ>
-            {`Hello, ${ctx}`}
-        </templ>
-    )
-};
+  return <templ>{`Hello, ${ctx}`}</templ>;
+}

@@ -1,24 +1,20 @@
-import { NodePath } from '@babel/traverse';
-import { getJSXElementName } from './helpers';
+import { NodePath } from "@babel/traverse";
+import { getJSXElementName } from "./helpers";
 
-export type TagName 
-    = 'templ'
-    | 'ln'
-    | 'indent'
-    | 'cb'
+export type TagName = "templ" | "ln" | "indent" | "cb";
 
 export function isTemplElement(node: NodePath) {
-    return getJSXElementName(node) === 'templ';
+  return getJSXElementName(node) === "templ";
 }
 
 export function isLnElement(node: NodePath) {
-    getJSXElementName(node) === 'ln';
+  getJSXElementName(node) === "ln";
 }
 
 export function isIndentElement(node: NodePath) {
-    getJSXElementName(node) === 'indent';
+  getJSXElementName(node) === "indent";
 }
 
 export function isCbElement(node: NodePath) {
-    getJSXElementName(node) === 'cb';
+  getJSXElementName(node) === "cb";
 }

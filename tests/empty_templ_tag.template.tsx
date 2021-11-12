@@ -1,7 +1,5 @@
-export default function generate(ctx: any) {
-    return (
-        <templ />
-    )
+export default function generate() {
+  return <templ />;
 }
 
-console.log(generate({}))
+console.log(generate());

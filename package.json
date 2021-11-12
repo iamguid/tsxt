@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
-    "@types/node": "^16.11.7"
+    "@types/node": "^16.11.7",
+    "prettier": "2.4.1"
   }
 }

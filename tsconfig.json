@@ -1,31 +1,25 @@
 {
-    "compilerOptions": {
-        "target": "es2015",
-        "module": "commonjs",
-        "skipLibCheck": true,
-        "lib": [
-            "ES2020",
-        ],
-        "jsx": "preserve",
-        "declaration": true,
-        "sourceMap": true,
-        "composite": true,
-        "sourceRoot": "./src",
-        "outDir": "./dist-lib",
-        "strict": true,
-        "moduleResolution": "node",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "paths": {
-            "*": ["./types/*.d.ts"]
-        },
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "lib": ["ES2020"],
+    "jsx": "preserve",
+    "declaration": true,
+    "sourceMap": true,
+    "composite": true,
+    "sourceRoot": "./src",
+    "outDir": "./dist-lib",
+    "strict": true,
+    "moduleResolution": "node",
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "*": ["./types/*.d.ts"]
     },
-    "exclude": [
-        "node_modules"
-    ]
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": ["node_modules"]
 }

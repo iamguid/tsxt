@@ -4,17 +4,19 @@ import { DtoFilesGenerator } from "../src/generator/DtoFilesGenerator/DtoFilesGe
 export function generate(ctx: DtoFilesGenerator.Context) {
   <template>
     {`// GENERATED CODE -- DO NOT EDIT!`}
-    <ln/>
+    <ln />
 
     {`import * as grpcWeb from "grpc-web"`}
     {`import * jspb from "google-protobuf`}
-    <ln/>
+    <ln />
 
     {ctx.imports.map((imprt) => {
-      {`import * ${imprt.name} from "${imprt.path}"`}
+      {
+        `import * ${imprt.name} from "${imprt.path}"`;
+      }
     })}
   </template>;
-};
+}
 ```
 
 ```tsx

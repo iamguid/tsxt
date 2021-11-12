@@ -1,11 +1,7 @@
 import { RealisticExample } from "./realistic";
 
 function Header() {
-  return (
-    <templ>
-      {`// "GENERATED CODE -- DO NOT EDIT!"`}
-    </templ>
-  )
+  return <templ>{`// "GENERATED CODE -- DO NOT EDIT!"`}</templ>;
 }
 
 function Imports({ imports }: { imports: RealisticExample.Import[] }) {
@@ -15,11 +11,11 @@ function Imports({ imports }: { imports: RealisticExample.Import[] }) {
       {`import * jspb from "google-protobuf"`}
       <ln />
 
-      {imports.map(imprt => (
-        <templ>
-          {`import * ${imprt.name} from "${imprt.path}";`}
-        </templ>
-      )).join('')}
+      {imports
+        .map((imprt) => (
+          <templ>{`import * ${imprt.name} from "${imprt.path}";`}</templ>
+        ))
+        .join("")}
     </templ>
   );
 }
@@ -29,33 +25,35 @@ function Client({ client }: { client: RealisticExample.Client }) {
     <templ>
       {`export interface ${client.interfaceClassName} {`}
       <indent>
-        {client.methods.map(method => (
-          method.isServerStreaming ? (
-            <templ>
-              {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<${method.outputType}>;`}
-            </templ>
-          ) : (
-            <templ>
-              {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => Promise<${method.outputType}>;`}
-            </templ>
+        {client.methods
+          .map((method) =>
+            method.isServerStreaming ? (
+              <templ>
+                {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<${method.outputType}>;`}
+              </templ>
+            ) : (
+              <templ>
+                {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => Promise<${method.outputType}>;`}
+              </templ>
+            )
           )
-        )).join('')}
+          .join("")}
       </indent>
       {`}`}
 
-      <ln/>
+      <ln />
 
       {`export class ${client.clientClassName} extends ${client.interfaceClassName} {`}
       <indent>
-        {client.methods.map(method => (
-          <templ>
-            {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}> {`}
-            <indent>
-              {`return void;`}
-            </indent>
-            {`}`}
-          </templ>
-        )).join('')}
+        {client.methods
+          .map((method) => (
+            <templ>
+              {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}> {`}
+              <indent>{`return void;`}</indent>
+              {`}`}
+            </templ>
+          ))
+          .join("")}
       </indent>
       {`}`}
     </templ>
@@ -65,7 +63,7 @@ function Client({ client }: { client: RealisticExample.Client }) {
 function Clients({ clients }: { clients: RealisticExample.Client[] }) {
   return (
     <templ>
-      {clients.map(client => (
+      {clients.map((client) => (
         <templ>
           <Client client={client} />
           <ln />
@@ -79,9 +77,9 @@ export default function (ctx: RealisticExample.Context) {
   return (
     <templ>
       <Header />
-      <ln/>
+      <ln />
       <Imports imports={ctx.imports} />
-      <ln/>
+      <ln />
       <Clients clients={ctx.clients} />
     </templ>
   );

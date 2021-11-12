@@ -1,11 +1,11 @@
 export default function generate(ctx: any) {
-    return (
-        <templ>
-            {`test`}
-            {'test'}
-            {"test"}
-        </templ>
-    )
+  return (
+    <templ>
+      {`test`}
+      {"test"}
+      {"test"}
+    </templ>
+  );
 }
 
-console.log(generate({}))
+console.log(generate({}));
