@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`template generates correctly 1`] = `
+"item \\"a\\" has value \\"1\\";
+item \\"b\\" has value \\"2\\";
+item \\"c\\" has value \\"3\\";
+"
+`;

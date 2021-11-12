@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`template generates correctly 1`] = `
+"line 1
+line 2
+array,1[object Object]"
+`;

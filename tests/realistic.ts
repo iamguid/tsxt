@@ -23,36 +23,36 @@ export interface Context {
   clients: Client[];
 }
 
+export const ctx: Context = {
+  imports: [
+    { name: "a", path: "./a" },
+    { name: "b", path: "./b" },
+    { name: "c", path: "./c" },
+  ],
+
+  clients: [
+    {
+      clientClassName: "SomeClassName",
+      interfaceClassName: "ISomeClassName",
+      methods: [
+        {
+          isServerStreaming: true,
+          methodName: "methodA",
+          inputType: "InputType",
+          outputType: "OutputType",
+        },
+        {
+          isServerStreaming: false,
+          methodName: "methodB",
+          inputType: "InputType",
+          outputType: "OutputType",
+        },
+      ],
+    },
+  ],
+};
+
 function main() {
-  const ctx: Context = {
-    imports: [
-      { name: "a", path: "./a" },
-      { name: "b", path: "./b" },
-      { name: "c", path: "./c" },
-    ],
-
-    clients: [
-      {
-        clientClassName: "SomeClassName",
-        interfaceClassName: "ISomeClassName",
-        methods: [
-          {
-            isServerStreaming: true,
-            methodName: "methodA",
-            inputType: "InputType",
-            outputType: "OutputType",
-          },
-          {
-            isServerStreaming: false,
-            methodName: "methodB",
-            inputType: "InputType",
-            outputType: "OutputType",
-          },
-        ],
-      },
-    ],
-  };
-
   const result = template(ctx);
   console.log(result);
 }
