@@ -14,10 +14,10 @@ const CustomWithArgsTmpl = ({
       {arg3[0]}
     </templ>
   );
-}
+};
 
 export default () => (
   <templ>
     <CustomWithArgsTmpl arg1="test1" arg2={`test2`} arg3={["test3"]} />
   </templ>
-)
+);

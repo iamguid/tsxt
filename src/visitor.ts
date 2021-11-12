@@ -45,7 +45,7 @@ const buildResultExpression = (
   const concationationExpressions = path.node.children
     .filter((child) => isJSXExpressionContainer(child))
     .map((child) => child as JSXExpressionContainer)
-    .filter((child) => isExpression(child.expression))
+    .filter((child) => isExpression(child.expression));
 
   let resultExpression: BinaryExpression | Expression = stringLiteral("");
 
@@ -61,11 +61,13 @@ const buildResultExpression = (
       expr.expression.type === "TemplateLiteral" ||
       expr.expression.type === "StringLiteral";
 
-    const spased = isLiteral
-      ? stringLiteral(symbols)
-      : stringLiteral("");
+    const spased = isLiteral ? stringLiteral(symbols) : stringLiteral("");
 
-    const binaryExpr = binaryExpression("+", spased, expr.expression as Expression);
+    const binaryExpr = binaryExpression(
+      "+",
+      spased,
+      expr.expression as Expression
+    );
 
     const lined = isLiteral
       ? binaryExpression("+", binaryExpr, stringLiteral("\n"))
@@ -99,26 +101,24 @@ const handleJSXIndentElementExit = (
 ) => {
   const resultExpression = buildResultExpression(path, state);
   path.replaceWith(jsxExpressionContainer(resultExpression));
-  path.setData("alreadyIndented", true);
   indent--;
-};
-
-const handleJSXCustomElementEnter = (path: NodePath<JSXElement>) => {
 };
 
 const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
   const childrenArray: Expression[] = path.node.children
-    .filter(child => isJSXExpressionContainer(child) || isBinaryExpression(child))
-    .filter(child => {
+    .filter(
+      (child) => isJSXExpressionContainer(child) || isBinaryExpression(child)
+    )
+    .filter((child) => {
       if (isJSXExpressionContainer(child)) {
-        return isExpression((child as JSXExpressionContainer).expression)
+        return isExpression((child as JSXExpressionContainer).expression);
       }
 
       return true;
     })
-    .map(child => {
+    .map((child) => {
       if (isJSXExpressionContainer(child)) {
-        return (child as JSXExpressionContainer).expression as Expression
+        return (child as JSXExpressionContainer).expression as Expression;
       }
 
       return child as Expression;
@@ -160,16 +160,23 @@ const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
     }
   );
 
-  const paramsObjectExpression: ObjectExpression = objectExpression(params.map((param) => {
-    return objectProperty(stringLiteral(param.name), param.value);
-  }));
+  const paramsObjectExpression: ObjectExpression = objectExpression(
+    params.map((param) => {
+      return objectProperty(stringLiteral(param.name), param.value);
+    })
+  );
 
   const childrenArrayExpression = arrayExpression(childrenArray);
 
   const elementName = getJSXElementName(path);
 
   path.replaceWith(
-    jsxExpressionContainer(callExpression(identifier(elementName), [paramsObjectExpression, childrenArrayExpression]))
+    jsxExpressionContainer(
+      callExpression(identifier(elementName), [
+        paramsObjectExpression,
+        childrenArrayExpression,
+      ])
+    )
   );
 };
 
@@ -181,7 +188,7 @@ export const handlers: Record<string, Handler<JSXElement>> = {
   "ln.enter": handleJSXLnElementEnter,
   "cb.enter": () => undefined,
   "cb.exit": () => undefined,
-  "custom.enter": handleJSXCustomElementEnter,
+  "custom.enter": () => undefined,
   "custom.exit": handleJSXCustomElementExit,
 };
 
