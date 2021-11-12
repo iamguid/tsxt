@@ -1,4 +1,4 @@
-export default function generate(ctx: any) {
+export default function generate() {
   return (
     <templ>
       {"test1"}
@@ -11,4 +11,4 @@ export default function generate(ctx: any) {
   );
 }
 
-console.log({});
+console.log();

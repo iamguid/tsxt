@@ -1,0 +1,4 @@
+dist-lib
+dist-examples
+dist-tests
+node_modules

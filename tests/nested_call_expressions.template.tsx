@@ -1,9 +1,9 @@
-export default function generate(ctx: any) {
+export default function generate() {
   return (
     <templ>
       {["test1"]
         .map((item1) => {
-          let test: string = "";
+          let test = "";
           return ["test2"]
             .map((item2) => {
               test = item2;
@@ -23,4 +23,4 @@ export default function generate(ctx: any) {
   );
 }
 
-console.log(generate({}));
+console.log(generate());

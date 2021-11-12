@@ -68,9 +68,10 @@ const makeExpression = (
   let resultExpression: BinaryExpression | Expression = stringLiteral("");
 
   const indentSymbol =
-    state.opts.indentType == "space"
+    state.opts.indentType === "space"
       ? String.fromCharCode(160)
       : String.fromCharCode(9);
+
   const symbols = indentSymbol.repeat(indent * state.opts.indentSize);
 
   resultObjects.forEach((obj) => {
@@ -106,7 +107,7 @@ const handleJSXLnElementEnter = (path: NodePath<JSXElement>) => {
   path.replaceWith(jsxExpressionContainer(stringLiteral("")));
 };
 
-const handleJSXIndentElementEnter = (path: NodePath<JSXElement>) => {
+const handleJSXIndentElementEnter = () => {
   indent++;
 };
 
@@ -168,8 +169,8 @@ const handleJSXCustomElementEnter = (path: NodePath<JSXElement>) => {
   );
 };
 
-const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
-  console.log("YEY exit", getJSXElementName(path));
+const handleJSXCustomElementExit = () => {
+  throw Error("Not implemented");
 };
 
 export const handlers: Record<string, Handler<JSXElement>> = {
@@ -181,7 +182,7 @@ export const handlers: Record<string, Handler<JSXElement>> = {
   "cb.enter": () => undefined,
   "cb.exit": () => undefined,
   "custom.enter": handleJSXCustomElementEnter,
-  "custom.exit": handleJSXCustomElementEnter,
+  "custom.exit": handleJSXCustomElementExit,
 };
 
 const visitor: Visitor<TSXTPluginOptions> = {

@@ -1,30 +1,20 @@
 import { NodePath } from "@babel/traverse";
-import { Node } from "@babel/types";
-import generate from "@babel/generator";
+import { isJSXIdentifier, isJSXNamespacedName, JSXElement } from "@babel/types";
 
-export function getJSXElementName(node: NodePath<any> | Node): string {
-  return node instanceof NodePath
-    ? node.node.openingElement.name.name
-    : // @ts-ignore
-      (node as Node).openingElement.name.name;
-}
+export function getJSXElementName(
+  node: NodePath<JSXElement> | JSXElement
+): string {
+  if (node instanceof NodePath) {
+    node = node.node;
+  }
 
-export function getDataForScope(path: NodePath, key: string = "$data"): any {
-  const parent = path.find((parentPath) => parentPath.getData(key));
+  const nameNode = node.openingElement.name;
 
-  return parent ? parent.getData(key) : null;
-}
-
-export function getNodePathErrorMessage(nodePath: NodePath, err?: TypeError) {
-  const { node } = nodePath;
-  const result = generate(node);
-  const data = getDataForScope(nodePath);
-
-  let message = (err && err.message) || "";
-
-  message += `\n\nNode: ${result.code}`;
-  message += `\nLocation: ${JSON.stringify(node.loc)}`;
-  message += `\nData: ${JSON.stringify(data, null, 2)}`;
-
-  return message;
+  if (isJSXIdentifier(nameNode)) {
+    return nameNode.name;
+  } else if (isJSXNamespacedName(nameNode)) {
+    return `${nameNode.namespace.name}.${nameNode.name}`;
+  } else {
+    throw new Error(`type ${nameNode.type} not supported in jsx`);
+  }
 }

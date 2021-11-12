@@ -2,6 +2,8 @@ import * as babel from "@babel/core";
 import { declare } from "@babel/helper-plugin-utils";
 import visitor from "./visitor";
 
+export type TSXTTagName = "templ" | "ln" | "indent" | "cb";
+
 export interface TSXTOptions {
   indentType: "space" | "tab";
   indentSize: number;
@@ -20,6 +22,7 @@ export const defaultOptions: TSXTOptions = {
   codeblockEnd: "}",
 };
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default declare<TSXTPluginOptions, babel.PluginObj<any>>((api) => {
   api.assertVersion(7);
 

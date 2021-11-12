@@ -1,33 +1,30 @@
-import { Context } from "vm";
-import realisticTemplate from "./realistic.template";
+import template from "./realistic.template";
 
-export namespace RealisticExample {
-  export interface Import {
-    name: string;
-    path: string;
-  }
+export interface Import {
+  name: string;
+  path: string;
+}
 
-  export interface Method {
-    isServerStreaming: boolean;
-    methodName: string;
-    inputType: string;
-    outputType: string;
-  }
+export interface Method {
+  isServerStreaming: boolean;
+  methodName: string;
+  inputType: string;
+  outputType: string;
+}
 
-  export interface Client {
-    interfaceClassName: string;
-    clientClassName: string;
-    methods: Method[];
-  }
+export interface Client {
+  interfaceClassName: string;
+  clientClassName: string;
+  methods: Method[];
+}
 
-  export interface Context {
-    imports: Import[];
-    clients: Client[];
-  }
+export interface Context {
+  imports: Import[];
+  clients: Client[];
 }
 
 function main() {
-  const ctx: RealisticExample.Context = {
+  const ctx: Context = {
     imports: [
       { name: "a", path: "./a" },
       { name: "b", path: "./b" },
@@ -56,7 +53,7 @@ function main() {
     ],
   };
 
-  const result = realisticTemplate(ctx);
+  const result = template(ctx);
   console.log(result);
 }
 
