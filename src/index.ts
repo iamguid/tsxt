@@ -1,54 +1,28 @@
-import * as fs from 'fs';
 import * as babel from '@babel/core';
-import PluginJsxSyntax from '@babel/plugin-syntax-jsx';
-import PresetTypescript from '@babel/preset-typescript';
-import { TSXTPlugin, TSXTOptions } from './plugin';
+import { declare } from '@babel/helper-plugin-utils';
+import visitor from './visitor';
 
-export interface VisitorOptions {
+export interface TSXTOptions {
     indentType: 'space' | 'tab';
     indentSize: number;
 }
 
-export interface VisitorState {
-    opts: VisitorOptions;
+export interface TSXTPluginOptions {
+    opts: TSXTOptions;
 }
 
-export interface TransformerOptions {
-	plugins: babel.PluginObj<any>[];
+export const defaultOptions: TSXTOptions = {
+	indentType: 'space',
+	indentSize: 4,
 }
 
-const defaultOptions: TransformerOptions = {
-	plugins: []
-};
+export default declare<TSXTPluginOptions, babel.PluginObj<any>>((api) => {
+	api.assertVersion(7);
 
-export function compile(
-	fileName: string,
-	options: Partial<TransformerOptions> = {}
-) {
-	const _options = {
-		...defaultOptions,
-		...options
-	};
-
-	const opts: TSXTOptions = {
-        ...defaultOptions,
-        indentType: 'space',
-        indentSize: 4,
-	};
-
-	const transformResult = babel.transformFileSync(fileName, {
-		ast: true,
-		presets: [
-			PresetTypescript
-		],
-		plugins: [
-			PluginJsxSyntax,
-			[TSXTPlugin, opts],
-			..._options.plugins
-		]
-    });
-
-    if (transformResult?.code) {
-        fs.writeFileSync(`${fileName}.js`, transformResult.code)
+    const pluginObj: babel.PluginObj<TSXTPluginOptions> = {
+		name: 'TSXT',
+		visitor
     }
-}
+
+    return pluginObj;
+})
