@@ -16,7 +16,7 @@ export interface ISomeClassName {
 }
 
 export class SomeClassName extends ISomeClassName {
-    public methodA(request: InputType, metadata: grpcWeb.Metadata): Promise<OutputType> {
+    public methodA(request: InputType, metadata: grpcWeb.Metadata): grpcWeb.ClientReadableStream<OutputType> {
         return void;
     }
     public methodB(request: InputType, metadata: grpcWeb.Metadata): Promise<OutputType> {

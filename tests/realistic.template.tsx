@@ -2,10 +2,9 @@ import { Context, Import, Client } from "./realistic";
 
 const HeaderTmpl = () => <templ>{`// "GENERATED CODE -- DO NOT EDIT!"`}</templ>;
 
-const ImportsTmpl = ({ imports }: { imports: Import[] }) => (
+const ImportsTmpl = ({ imports }: { imports: Import[] }, children: any[]) => (
   <templ>
-    {`import * as grpcWeb from "grpc-web"`}
-    {`import * jspb from "google-protobuf"`}
+    {children}
     <ln />
 
     {imports
@@ -17,6 +16,14 @@ const ImportsTmpl = ({ imports }: { imports: Import[] }) => (
 );
 
 const ClientTmpl = ({ client }: { client: Client }) => (
+  <templ>
+    <ClientInterfaceTmpl client={client} />
+    <ln />
+    <ClientClassTmpl client={client} />
+  </templ>
+);
+
+const ClientInterfaceTmpl = ({ client }: { client: Client }) => (
   <templ>
     {`export interface ${client.interfaceClassName} {`}
     <indent>
@@ -35,24 +42,34 @@ const ClientTmpl = ({ client }: { client: Client }) => (
         .join("")}
     </indent>
     {`}`}
+  </templ>
+)
 
-    <ln />
-
+const ClientClassTmpl = ({ client }: { client: Client }) => (
+  <templ>
     {`export class ${client.clientClassName} extends ${client.interfaceClassName} {`}
     <indent>
       {client.methods
-        .map((method) => (
-          <templ>
-            {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}> {`}
-            <indent>{`return void;`}</indent>
-            {`}`}
-          </templ>
-        ))
+        .map((method) =>
+          method.isServerStreaming ? (
+            <templ>
+              {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): grpcWeb.ClientReadableStream<${method.outputType}> {`}
+              <indent>{`return void;`}</indent>
+              {`}`}
+            </templ>
+          ) : (
+            <templ>
+              {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}> {`}
+              <indent>{`return void;`}</indent>
+              {`}`}
+            </templ>
+          )
+        )
         .join("")}
     </indent>
     {`}`}
   </templ>
-);
+)
 
 const ClientsTmpl = ({ clients }: { clients: Client[] }) => (
   <templ>
@@ -69,7 +86,12 @@ export default (ctx: Context) => (
   <templ>
     <HeaderTmpl />
     <ln />
-    <ImportsTmpl imports={ctx.imports} />
+    <ImportsTmpl imports={ctx.imports}>
+      <templ>
+        {`import * as grpcWeb from "grpc-web"`}
+        {`import * jspb from "google-protobuf"`}
+      </templ>
+    </ImportsTmpl>
     <ln />
     <ClientsTmpl clients={ctx.clients} />
   </templ>
