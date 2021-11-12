@@ -33,47 +33,19 @@ export type Handler<TNode extends Node> = (
 
 let indent = 0;
 
-interface ConcationationExpression {
-  expression: Expression;
-  alreadyIndented: boolean;
-}
-
 interface ObjectArgs {
   name: string;
   value: StringLiteral | Expression;
-}
-
-const buildConcatinationExpressions = (
-  path: NodePath<JSXElement>,
-  state: TSXTPluginOptions
-): ConcationationExpression[] => {
-  return path.node.children
-    .map((child, i) => {
-      const childPath = path.get(`children.${i}`) as NodePath<Node>;
-      const alreadyIndented = Boolean(childPath.getData("alreadyIndented"));
-
-      return {
-        child,
-        alreadyIndented,
-      };
-    })
-    .filter((obj) => {
-      return isJSXExpressionContainer(obj.child);
-    })
-    .map((obj) => {
-      return {
-        expression: (obj.child as JSXExpressionContainer)
-          .expression as Expression,
-        alreadyIndented: obj.alreadyIndented,
-      };
-    });
 }
 
 const buildResultExpression = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
 ): Expression => {
-  const concationationExpressions = buildConcatinationExpressions(path, state);
+  const concationationExpressions = path.node.children
+    .filter((child) => isJSXExpressionContainer(child))
+    .map((child) => child as JSXExpressionContainer)
+    .filter((child) => isExpression(child.expression))
 
   let resultExpression: BinaryExpression | Expression = stringLiteral("");
 
@@ -84,22 +56,22 @@ const buildResultExpression = (
 
   const symbols = indentSymbol.repeat(indent * state.opts.indentSize);
 
-  concationationExpressions.forEach((obj) => {
-    const addNewline =
-      obj.expression.type === "TemplateLiteral" ||
-      obj.expression.type === "StringLiteral";
+  concationationExpressions.forEach((expr) => {
+    const isLiteral =
+      expr.expression.type === "TemplateLiteral" ||
+      expr.expression.type === "StringLiteral";
 
-    const spase = obj.alreadyIndented
-      ? stringLiteral("")
-      : stringLiteral(symbols);
+    const spased = isLiteral
+      ? stringLiteral(symbols)
+      : stringLiteral("");
 
-    const expr = binaryExpression("+", spase, obj.expression);
+    const binaryExpr = binaryExpression("+", spased, expr.expression as Expression);
 
-    const line = !addNewline
-      ? expr
-      : binaryExpression("+", expr, stringLiteral("\n"));
+    const lined = isLiteral
+      ? binaryExpression("+", binaryExpr, stringLiteral("\n"))
+      : binaryExpr;
 
-    resultExpression = binaryExpression("+", resultExpression, line);
+    resultExpression = binaryExpression("+", resultExpression, lined);
   });
 
   return resultExpression;
