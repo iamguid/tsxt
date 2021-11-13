@@ -1,6 +1,6 @@
 {
   "name": "tsxt",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "JSX based template engine with types",
   "main": "index.js",
   "scripts": {
