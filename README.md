@@ -36,6 +36,8 @@ function _default(ctx) {
 }
 ```
 
+You can find more examples in [tests](https://github.com/iamguid/tsxt/tree/main/tests) folder
+
 ## Usage
 Babel config should contain `@babel/preset-typescript` preset for typescript support and `@babel/preset-env` if you want to run it in different environments.
 Also you can use `webpack` to run templates in browser.
@@ -64,8 +66,6 @@ Then you can compile your tsx templates, for example with command:
 ```bash
 $ babel --config-file ./templates/babel.config.json --extensions .tsx,.ts --out-dir ./templates/dist ./templates
 ```
-
-You can find more examples in [tests](https://github.com/iamguid/tsxt/tree/main/tests) folder
 
 ## Tags
 TSXT provides three different tags (`templ`, `indent`, `ln`)
