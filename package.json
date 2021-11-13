@@ -19,7 +19,7 @@
     "template",
     "template engine"
   ],
-  "author": "Vladislav Lebedev",
+  "author": "Vladislav Lebedev <iam.guid@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "5.3.1",
