@@ -17,6 +17,7 @@ import {
   JSXElement,
   JSXExpressionContainer,
   jsxExpressionContainer,
+  nullLiteral,
   ObjectExpression,
   objectExpression,
   objectProperty,
@@ -125,21 +126,23 @@ const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
     });
 
   const params: ObjectArgs[] = path.node.openingElement.attributes.map(
-    (attr) => {
+    (attr, index) => {
+      const attrPath = path.get(`openingElement.attributes.${index}`) as NodePath<Node>;
+
       if (isJSXSpreadAttribute(attr)) {
-        throw new Error("TSXT does not support spread attributes");
+        throw attrPath.buildCodeFrameError("TSXT does not support spread attributes")
       }
 
       if (isJSXElement(attr.value)) {
-        throw new Error("TSXT does not support JSX elements");
+        throw attrPath.buildCodeFrameError("TSXT does not support JSX elements attributes")
       }
 
       if (isJSXFragment(attr.value)) {
-        throw new Error("TSXT does not support JSX fragments");
+        throw attrPath.buildCodeFrameError("TSXT does not support JSX fragments attributes")
       }
 
       if (isJSXElement(attr.value)) {
-        throw new Error("TSXT does not support JSX elements");
+        throw attrPath.buildCodeFrameError("TSXT does not support JSX elements attributes")
       }
 
       const name = attr.name.name as string;
@@ -150,13 +153,13 @@ const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
 
       if (isJSXExpressionContainer(attr.value)) {
         if (isJSXEmptyExpression(attr.value.expression)) {
-          throw new Error("TSXT does not support empty expressions");
+          return { name, value: nullLiteral() };
         }
 
         return { name, value: attr.value.expression };
       }
 
-      throw new Error(`TSXT does not support ${attr.type}`);
+      throw attrPath.buildCodeFrameError(`TSXT does not support ${attr.type} attributes`)
     }
   );
 
