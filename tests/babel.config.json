@@ -4,7 +4,6 @@
     "@babel/preset-typescript"
   ],
   "plugins": [
-    "@babel/plugin-syntax-typescript",
     [
       "../dist-lib/src/index.js",
       {
