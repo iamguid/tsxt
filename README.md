@@ -8,5 +8,5 @@ Under the hood, TSXT uses Babel to build an AST, which is then traversed to find
 ## Installation
 
 ```bash
-$ npm i tsxt
+$ npm i babel-plugin-tsxt
 ```
