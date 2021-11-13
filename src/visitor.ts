@@ -201,6 +201,7 @@ export const handlers: Record<string, Handler<JSXElement>> = {
   "indent.enter": handleJSXIndentElementEnter,
   "indent.exit": handleJSXIndentElementExit,
   "ln.enter": handleJSXLnElementEnter,
+  "ln.exit": () => undefined,
   "cb.enter": () => undefined,
   "cb.exit": () => undefined,
   "custom.enter": () => undefined,
