@@ -127,22 +127,32 @@ const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
 
   const params: ObjectArgs[] = path.node.openingElement.attributes.map(
     (attr, index) => {
-      const attrPath = path.get(`openingElement.attributes.${index}`) as NodePath<Node>;
+      const attrPath = path.get(
+        `openingElement.attributes.${index}`
+      ) as NodePath<Node>;
 
       if (isJSXSpreadAttribute(attr)) {
-        throw attrPath.buildCodeFrameError("TSXT does not support spread attributes")
+        throw attrPath.buildCodeFrameError(
+          "TSXT does not support spread attributes"
+        );
       }
 
       if (isJSXElement(attr.value)) {
-        throw attrPath.buildCodeFrameError("TSXT does not support JSX elements attributes")
+        throw attrPath.buildCodeFrameError(
+          "TSXT does not support JSX elements attributes"
+        );
       }
 
       if (isJSXFragment(attr.value)) {
-        throw attrPath.buildCodeFrameError("TSXT does not support JSX fragments attributes")
+        throw attrPath.buildCodeFrameError(
+          "TSXT does not support JSX fragments attributes"
+        );
       }
 
       if (isJSXElement(attr.value)) {
-        throw attrPath.buildCodeFrameError("TSXT does not support JSX elements attributes")
+        throw attrPath.buildCodeFrameError(
+          "TSXT does not support JSX elements attributes"
+        );
       }
 
       const name = attr.name.name as string;
@@ -159,7 +169,9 @@ const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
         return { name, value: attr.value.expression };
       }
 
-      throw attrPath.buildCodeFrameError(`TSXT does not support ${attr.type} attributes`)
+      throw attrPath.buildCodeFrameError(
+        `TSXT does not support ${attr.type} attributes`
+      );
     }
   );
 

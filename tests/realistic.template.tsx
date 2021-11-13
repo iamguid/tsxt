@@ -2,7 +2,10 @@ import { Context, Import, Client } from "./realistic";
 
 const HeaderTmpl = () => <templ>{`// "GENERATED CODE -- DO NOT EDIT!"`}</templ>;
 
-const ImportsTmpl = ({ imports }: { imports: Import[] }, children: any[]) => (
+const ImportsTmpl = (
+  { imports }: { imports: Import[] },
+  children: string[]
+) => (
   <templ>
     {children}
     <ln />
@@ -43,7 +46,7 @@ const ClientInterfaceTmpl = ({ client }: { client: Client }) => (
     </indent>
     {`}`}
   </templ>
-)
+);
 
 const ClientClassTmpl = ({ client }: { client: Client }) => (
   <templ>
@@ -69,7 +72,7 @@ const ClientClassTmpl = ({ client }: { client: Client }) => (
     </indent>
     {`}`}
   </templ>
-)
+);
 
 const ClientsTmpl = ({ clients }: { clients: Client[] }) => (
   <templ>
