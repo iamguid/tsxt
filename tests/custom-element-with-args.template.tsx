@@ -1,3 +1,5 @@
+import "../src/index";
+
 const CustomWithArgsTmpl = ({
   arg1,
   arg2,

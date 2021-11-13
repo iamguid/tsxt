@@ -1,3 +1,5 @@
+import "../src/index";
+
 export default () => (
   <templ>
     {`line 1`}

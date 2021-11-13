@@ -1,3 +1,5 @@
+import "../src/index";
+
 const CustomWithoutArgsTmpl = () => {
   return "test 1";
 };

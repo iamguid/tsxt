@@ -2,6 +2,16 @@ import * as babel from "@babel/core";
 import { declare } from "@babel/helper-plugin-utils";
 import visitor from "./visitor";
 
+declare global {
+  namespace JSX {
+    export interface IntrinsicElements {
+      templ: any;
+      indent: any;
+      ln: any;
+    }
+  }
+}
+
 export type TSXTTagName = "templ" | "ln" | "indent";
 
 export interface TSXTOptions {

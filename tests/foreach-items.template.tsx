@@ -1,3 +1,4 @@
+import "../src/index";
 import { Context } from "./foreach-items";
 
 export default (ctx: Context) => (
