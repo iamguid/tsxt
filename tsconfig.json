@@ -12,10 +12,7 @@
     "outDir": "./dist-lib",
     "strict": true,
     "moduleResolution": "node",
-    "typeRoots": ["node_modules/@types"],
-    "paths": {
-      "*": ["./types/*.d.ts"]
-    },
+    "typeRoots": ["node_modules/@types", "./types"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
