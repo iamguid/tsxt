@@ -65,7 +65,7 @@ Then you can compile your tsx templates, for example with command:
 $ babel --config-file ./templates/babel.config.json --extensions .tsx,.ts --out-dir ./templates/dist ./templates
 ```
 
-You can find more examples in [tests](tsxt/tree/main/tests) folder
+You can find more examples in [tests](https://github.com/iamguid/tsxt/tree/main/tests) folder
 
 ## Tags
 TSXT provides three different tags (`templ`, `indent`, `ln`)
