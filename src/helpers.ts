@@ -1,13 +1,6 @@
-import { NodePath } from "@babel/traverse";
 import { isJSXIdentifier, isJSXNamespacedName, JSXElement } from "@babel/types";
 
-export function getJSXElementName(
-  node: NodePath<JSXElement> | JSXElement
-): string {
-  if (node instanceof NodePath) {
-    node = node.node;
-  }
-
+export function getJSXElementName(node: JSXElement): string {
   const nameNode = node.openingElement.name;
 
   if (isJSXIdentifier(nameNode)) {

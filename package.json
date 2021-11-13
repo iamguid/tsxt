@@ -1,8 +1,9 @@
 {
-  "name": "tsxt",
+  "name": "babel-plugin-tsxt",
   "version": "1.0.0",
   "description": "JSX based template engine with types",
-  "main": "index.js",
+  "main": "dist-lib/src/index.js",
+  "types": "dist-lib/src/index.d.ts",
   "scripts": {
     "test": "rm -rf ./dist-tests && npm run build:tests && jest",
     "clean": "rm -rf ./dist-lib && rm -rf ./dist-tests",
@@ -10,7 +11,8 @@
     "prettier": "prettier -c .",
     "build": "npm run clean && npm run build:plugin && npm run build:tests",
     "build:plugin": "tsc -p ./tsconfig.json",
-    "build:tests": "babel --config-file ./tests/babel.config.json --extensions .tsx,.ts --out-dir ./dist-tests ./tests"
+    "build:tests": "babel --config-file ./tests/babel.config.json --extensions .tsx,.ts --out-dir ./dist-tests ./tests",
+    "prepublish": "npm run test && npm run lint && npm run prettier"
   },
   "keywords": [
     "JSX",

@@ -183,7 +183,7 @@ const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
 
   const childrenArrayExpression = arrayExpression(childrenArray);
 
-  const elementName = getJSXElementName(path);
+  const elementName = getJSXElementName(path.node);
 
   path.replaceWith(
     jsxExpressionContainer(
@@ -211,7 +211,7 @@ export const handlers: Record<string, Handler<JSXElement>> = {
 const visitor: Visitor<TSXTPluginOptions> = {
   JSXElement: {
     enter: (path: NodePath<JSXElement>, state: TSXTPluginOptions) => {
-      const name = `${getJSXElementName(path)}.enter`;
+      const name = `${getJSXElementName(path.node)}.enter`;
 
       if (name in handlers) {
         handlers[name](path as NodePath<JSXElement>, state);
@@ -220,7 +220,7 @@ const visitor: Visitor<TSXTPluginOptions> = {
       }
     },
     exit: (path: NodePath<JSXElement>, state: TSXTPluginOptions) => {
-      const name = `${getJSXElementName(path)}.exit`;
+      const name = `${getJSXElementName(path.node)}.exit`;
 
       if (name in handlers) {
         handlers[name](path as NodePath<JSXElement>, state);
