@@ -21,7 +21,7 @@ export interface TSXTOptions {
   codeblockEnd: string;
 }
 
-export interface TSXTPluginOptions {
+export interface TSXTPluginOptions extends babel.PluginPass {
   opts: TSXTOptions;
 }
 

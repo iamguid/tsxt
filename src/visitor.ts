@@ -1,10 +1,12 @@
 import { Node, NodePath, Visitor } from "@babel/core";
+import template from "@babel/template";
 import {
   arrayExpression,
   BinaryExpression,
   binaryExpression,
   callExpression,
   Expression,
+  ExpressionStatement,
   identifier,
   isBinaryExpression,
   isExpression,
@@ -21,6 +23,8 @@ import {
   ObjectExpression,
   objectExpression,
   objectProperty,
+  Program,
+  Statement,
   StringLiteral,
   stringLiteral,
 } from "@babel/types";
@@ -31,8 +35,6 @@ export type Handler<TNode extends Node> = (
   path: NodePath<TNode>,
   state: TSXTPluginOptions
 ) => void;
-
-let indent = 0;
 
 interface ObjectArgs {
   name: string;
@@ -55,14 +57,13 @@ const buildResultExpression = (
       ? String.fromCharCode(160)
       : String.fromCharCode(9);
 
-  const symbols = indentSymbol.repeat(indent * state.opts.indentSize);
-
   concationationExpressions.forEach((expr) => {
     const isLiteral =
       expr.expression.type === "TemplateLiteral" ||
       expr.expression.type === "StringLiteral";
-
-    const spased = isLiteral ? stringLiteral(symbols) : stringLiteral("");
+      
+    const spaceExpr = template.ast(`"${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize})`) as Statement as ExpressionStatement;
+    const spased = isLiteral ? spaceExpr.expression : stringLiteral("");
 
     const binaryExpr = binaryExpression(
       "+",
@@ -92,17 +93,24 @@ const handleJSXLnElementEnter = (path: NodePath<JSXElement>) => {
   path.replaceWith(jsxExpressionContainer(stringLiteral("")));
 };
 
-const handleJSXIndentElementEnter = () => {
-  indent++;
+const handleJSXIndentElementEnter = (path: NodePath<JSXElement>) => {
+  const incrementIndentTempl = template.ast(`(() => { globalThis.__tsxt__.indent++; return ""; })()`) as Statement as ExpressionStatement
+  path.node.children.unshift(jsxExpressionContainer(incrementIndentTempl.expression));
 };
 
 const handleJSXIndentElementExit = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
 ) => {
+  const decrementIndentTempl = template.ast(`(() => { globalThis.__tsxt__.indent--; return ""; })()`) as Statement as ExpressionStatement
   const resultExpression = buildResultExpression(path, state);
-  path.replaceWith(jsxExpressionContainer(resultExpression));
-  indent--;
+  const indentExpression = binaryExpression(
+    "+",
+    resultExpression,
+    decrementIndentTempl.expression
+  );
+
+  path.replaceWith(jsxExpressionContainer(indentExpression));
 };
 
 const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
@@ -209,6 +217,33 @@ export const handlers: Record<string, Handler<JSXElement>> = {
 };
 
 const visitor: Visitor<TSXTPluginOptions> = {
+  Program: {
+    enter: (path: NodePath<Program>, state) => {
+      const isTemplate = state.filename!.endsWith("template.tsx");
+
+      if (isTemplate) {
+        const header = template.ast(`
+          (function() {
+            if (typeof globalThis === 'object') return;
+            Object.defineProperty(Object.prototype, '__magic__', {
+              get: function() {
+                return this;
+              },
+              configurable: true
+            });
+            __magic__.globalThis = __magic__;
+            delete Object.prototype.__magic__;
+          }());
+
+          if (typeof globalThis.__tsxt__ === "undefined") {
+            globalThis.__tsxt__ = { indent: 0 };
+          }
+        `) as Statement[];
+
+        path.node.body.unshift(...header);
+      }
+    }
+  },
   JSXElement: {
     enter: (path: NodePath<JSXElement>, state: TSXTPluginOptions) => {
       const name = `${getJSXElementName(path.node)}.enter`;
