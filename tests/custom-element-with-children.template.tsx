@@ -1,5 +1,5 @@
 /* eslint-disable */
-import "../src/index";
+import "../dist-lib/src/index";
 
 const CustomWithChildren = (props: any, children: any[]) => (
   <templ>

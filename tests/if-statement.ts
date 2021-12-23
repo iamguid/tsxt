@@ -1,4 +1,4 @@
-import "../src/index";
+import "../dist-lib/src/index";
 import template from "./if-statement.template";
 
 export type Context = Array<boolean>;

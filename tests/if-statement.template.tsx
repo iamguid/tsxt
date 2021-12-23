@@ -1,4 +1,4 @@
-import "../src/index";
+import "../dist-lib/src/index";
 import { Context } from "./if-statement";
 
 export default (ctx: Context) => (

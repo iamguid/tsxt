@@ -1,4 +1,4 @@
-import "../src/index";
+import "../dist-lib/src/index";
 import { Context, Import, Client } from "./realistic";
 
 const HeaderTmpl = () => <templ>{`// "GENERATED CODE -- DO NOT EDIT!"`}</templ>;
