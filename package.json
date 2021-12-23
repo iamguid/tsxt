@@ -11,8 +11,7 @@
     "prettier": "prettier -c .",
     "build": "npm run clean && npm run build:plugin && npm run build:tests",
     "build:plugin": "tsc -p ./tsconfig.json",
-    "build:tests": "babel --config-file ./tests/babel.config.json --extensions .tsx,.ts --out-dir ./dist-tests ./tests",
-    "prepublish": "npm run test && npm run lint && npm run prettier"
+    "build:tests": "babel --config-file ./tests/babel.config.json --extensions .tsx,.ts --out-dir ./dist-tests ./tests"
   },
   "keywords": [
     "JSX",
