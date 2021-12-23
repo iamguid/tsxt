@@ -1,4 +1,4 @@
-import simple from "./reqursive-indent.template";
+import simple from "./recursive-indent.template";
 
 function main() {
   const ctx = "World";
