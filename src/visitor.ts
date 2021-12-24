@@ -54,7 +54,7 @@ const buildResultExpression = (
 
   const indentSymbol =
     state.opts.indentType === "space"
-      ? String.fromCharCode(160)
+      ? String.fromCharCode(32)
       : String.fromCharCode(9);
 
   concationationExpressions.forEach((expr) => {
