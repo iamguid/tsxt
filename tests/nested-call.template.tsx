@@ -16,9 +16,8 @@ export default () => (
                 {"test3"}
               </templ>
             );
-          })
-          .join("");
+          });
       })
-      .join("")}
+    }
   </templ>
 );

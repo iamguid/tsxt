@@ -3,5 +3,5 @@
 exports[`template generates correctly 1`] = `
 "line 1
 line 2
-array1[object Object]"
+array1"
 `;

@@ -2,8 +2,6 @@ import "../dist-lib/src/index";
 
 export default () => (
   <templ>
-    {`line 1`}
-    {"line 2"}
-    {["array", 1]}
+    {null}
   </templ>
 );

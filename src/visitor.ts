@@ -68,19 +68,28 @@ const buildResultExpression = (
     ) as Statement as ExpressionStatement;
     const spased = isLiteral ? spaceExpr.expression : stringLiteral("");
 
-    const binaryExpr = isLiteral
+    const exprWithChecks = isLiteral
       ? binaryExpression("+", spased, expr.expression as Expression)
       : (
           template.ast(
-            `(() => { const expr = ${
-              generate(expr.expression).code
-            }; return Array.isArray(expr) ? expr.join('') : expr; })()`
+            `(() => {
+              const expr = ${generate(expr.expression).code};
+              if (Array.isArray(expr)) {
+                return expr.join(''); 
+              } else if (expr === false) {
+                return '';
+              } else if (typeof expr !== 'string') {
+                throw new Error(\`Value '\${expr}' in not valid\`);
+              } else {
+                return expr; 
+              }
+            })()`
           ) as Statement as ExpressionStatement
         ).expression;
 
     const lined = isLiteral
-      ? binaryExpression("+", binaryExpr, stringLiteral("\n"))
-      : binaryExpr;
+      ? binaryExpression("+", exprWithChecks, stringLiteral("\n"))
+      : exprWithChecks;
 
     resultExpression = binaryExpression("+", resultExpression, lined);
   });
