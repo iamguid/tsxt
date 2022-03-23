@@ -43,7 +43,7 @@ const ClientInterfaceTmpl = ({ client }: { client: Client }) => (
             </templ>
           )
         )
-        .join("")}
+      }
     </indent>
     {`}`}
   </templ>
@@ -51,7 +51,7 @@ const ClientInterfaceTmpl = ({ client }: { client: Client }) => (
 
 const ClientClassTmpl = ({ client }: { client: Client }) => (
   <templ>
-    {`export class ${client.clientClassName} extends ${client.interfaceClassName} {`}
+    {`export class ${client.clientClassName} implements ${client.interfaceClassName} {`}
     <indent>
       {client.methods
         .map((method) =>
@@ -69,7 +69,7 @@ const ClientClassTmpl = ({ client }: { client: Client }) => (
             </templ>
           )
         )
-        .join("")}
+      }
     </indent>
     {`}`}
   </templ>

@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`template generates correctly 1`] = `
-"test1,test2,test3test4,test5
+"test1
+test2
+test3test4test5
 test6
 test7test8inside
 inside

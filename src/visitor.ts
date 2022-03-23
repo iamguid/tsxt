@@ -1,5 +1,6 @@
 import { Node, NodePath, Visitor } from "@babel/core";
 import template from "@babel/template";
+import generate from "@babel/generator";
 import {
   arrayExpression,
   BinaryExpression,
@@ -65,10 +66,12 @@ const buildResultExpression = (
     const spaceExpr = template.ast(`"${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize})`) as Statement as ExpressionStatement;
     const spased = isLiteral ? spaceExpr.expression : stringLiteral("");
 
+    const arrayCheck = template.ast(`(() => { const expr = ${generate(expr.expression).code}; return Array.isArray(expr) ? expr.join('') : expr; })()`) as Statement as ExpressionStatement;
+
     const binaryExpr = binaryExpression(
       "+",
       spased,
-      expr.expression as Expression
+      arrayCheck.expression
     );
 
     const lined = isLiteral
