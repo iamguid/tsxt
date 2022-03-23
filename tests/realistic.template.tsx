@@ -31,19 +31,17 @@ const ClientInterfaceTmpl = ({ client }: { client: Client }) => (
   <templ>
     {`export interface ${client.interfaceClassName} {`}
     <indent>
-      {client.methods
-        .map((method) =>
-          method.isServerStreaming ? (
-            <templ>
-              {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<${method.outputType}>;`}
-            </templ>
-          ) : (
-            <templ>
-              {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => Promise<${method.outputType}>;`}
-            </templ>
-          )
+      {client.methods.map((method) =>
+        method.isServerStreaming ? (
+          <templ>
+            {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<${method.outputType}>;`}
+          </templ>
+        ) : (
+          <templ>
+            {`${method.methodName}: (request: ${method.inputType}, metadata: grpcWeb.Metadata) => Promise<${method.outputType}>;`}
+          </templ>
         )
-      }
+      )}
     </indent>
     {`}`}
   </templ>
@@ -53,23 +51,21 @@ const ClientClassTmpl = ({ client }: { client: Client }) => (
   <templ>
     {`export class ${client.clientClassName} implements ${client.interfaceClassName} {`}
     <indent>
-      {client.methods
-        .map((method) =>
-          method.isServerStreaming ? (
-            <templ>
-              {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): grpcWeb.ClientReadableStream<${method.outputType}> {`}
-              <indent>{`return void;`}</indent>
-              {`}`}
-            </templ>
-          ) : (
-            <templ>
-              {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}> {`}
-              <indent>{`return void;`}</indent>
-              {`}`}
-            </templ>
-          )
+      {client.methods.map((method) =>
+        method.isServerStreaming ? (
+          <templ>
+            {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): grpcWeb.ClientReadableStream<${method.outputType}> {`}
+            <indent>{`return void;`}</indent>
+            {`}`}
+          </templ>
+        ) : (
+          <templ>
+            {`public ${method.methodName}(request: ${method.inputType}, metadata: grpcWeb.Metadata): Promise<${method.outputType}> {`}
+            <indent>{`return void;`}</indent>
+            {`}`}
+          </templ>
         )
-      }
+      )}
     </indent>
     {`}`}
   </templ>

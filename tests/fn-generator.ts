@@ -7,9 +7,9 @@ export interface Context {
 }
 
 export const ctx: Context = {
-    methodName: 'hello',
-    inputType: 'string',
-    outputType: 'number'
+  methodName: "hello",
+  inputType: "string",
+  outputType: "number",
 };
 
 function main() {

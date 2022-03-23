@@ -1,13 +1,13 @@
 import "../dist-lib/src/index";
 
 function returnsArray() {
-  return ['d', 'e', 'f'];
+  return ["d", "e", "f"];
 }
 
 export default () => (
   <templ>
-    {['a', 'b', 'c']}
+    {["a", "b", "c"]}
     {returnsArray()}
-    {['1', '2', '3'].map(v => v)}
+    {["1", "2", "3"].map((v) => v)}
   </templ>
 );
