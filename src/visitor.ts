@@ -62,17 +62,19 @@ const buildResultExpression = (
     const isLiteral =
       expr.expression.type === "TemplateLiteral" ||
       expr.expression.type === "StringLiteral";
-      
-    const spaceExpr = template.ast(`"${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize})`) as Statement as ExpressionStatement;
+
+    const spaceExpr = template.ast(
+      `"${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize})`
+    ) as Statement as ExpressionStatement;
     const spased = isLiteral ? spaceExpr.expression : stringLiteral("");
 
-    const arrayCheck = template.ast(`(() => { const expr = ${generate(expr.expression).code}; return Array.isArray(expr) ? expr.join('') : expr; })()`) as Statement as ExpressionStatement;
+    const arrayCheck = template.ast(
+      `(() => { const expr = ${
+        generate(expr.expression).code
+      }; return Array.isArray(expr) ? expr.join('') : expr; })()`
+    ) as Statement as ExpressionStatement;
 
-    const binaryExpr = binaryExpression(
-      "+",
-      spased,
-      arrayCheck.expression
-    );
+    const binaryExpr = binaryExpression("+", spased, arrayCheck.expression);
 
     const lined = isLiteral
       ? binaryExpression("+", binaryExpr, stringLiteral("\n"))
@@ -97,15 +99,21 @@ const handleJSXLnElementEnter = (path: NodePath<JSXElement>) => {
 };
 
 const handleJSXIndentElementEnter = (path: NodePath<JSXElement>) => {
-  const incrementIndentTempl = template.ast(`(() => { globalThis.__tsxt__.indent++; return ""; })()`) as Statement as ExpressionStatement
-  path.node.children.unshift(jsxExpressionContainer(incrementIndentTempl.expression));
+  const incrementIndentTempl = template.ast(
+    `(() => { globalThis.__tsxt__.indent++; return ""; })()`
+  ) as Statement as ExpressionStatement;
+  path.node.children.unshift(
+    jsxExpressionContainer(incrementIndentTempl.expression)
+  );
 };
 
 const handleJSXIndentElementExit = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
 ) => {
-  const decrementIndentTempl = template.ast(`(() => { globalThis.__tsxt__.indent--; return ""; })()`) as Statement as ExpressionStatement
+  const decrementIndentTempl = template.ast(
+    `(() => { globalThis.__tsxt__.indent--; return ""; })()`
+  ) as Statement as ExpressionStatement;
   const resultExpression = buildResultExpression(path, state);
   const indentExpression = binaryExpression(
     "+",
@@ -245,7 +253,7 @@ const visitor: Visitor<TSXTPluginOptions> = {
 
         path.node.body.unshift(...header);
       }
-    }
+    },
   },
   JSXElement: {
     enter: (path: NodePath<JSXElement>, state: TSXTPluginOptions) => {
