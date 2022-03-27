@@ -61,36 +61,33 @@ const buildResultExpression = (
       : String.fromCharCode(9);
 
   concationationExpressions.forEach((expr) => {
-    const isLiteral =
-      expr.expression.type === "TemplateLiteral" ||
-      expr.expression.type === "StringLiteral";
+    const isHandledExpression = handledExpressions.find((hexpr) => expr === hexpr);
 
-    const spaceExpr = template.ast(
-      `"${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize})`
-    ) as Statement as ExpressionStatement;
-    const spased = isLiteral ? spaceExpr.expression : stringLiteral("");
+    if (isHandledExpression) {
+      resultExpression = binaryExpression("+", resultExpression, expr.expression as Expression);
+    } else {
+      const isLiteral =
+        expr.expression.type === "TemplateLiteral" ||
+        expr.expression.type === "StringLiteral";
 
-    const exprWithChecks = binaryExpression("+", spased, 
-      (
+      const spaceExpr = template.ast(
+        `"${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize})`
+      ) as Statement as ExpressionStatement;
+      const spased = isLiteral ? spaceExpr.expression : stringLiteral("");
+
+      const preparedExpr = binaryExpression("+", spased, 
+        (
           template.ast(
             `(() => {
               const expr = ${generate(expr.expression).code};
-              if (Array.isArray(expr)) {
-                return expr.join(''); 
-              } else if (expr === false) {
-                return '';
-              } else if (typeof expr !== 'string') {
-                throw new Error(\`Value '\${expr}' in not a string\`);
-              } else {
-                return expr.length > 0 ? expr + '\\n' : ''; 
-              }
+              return globalThis.__tsxt__.prepareValue(expr);
             })()`
           ) as Statement as ExpressionStatement
-        ).expression);
+        ).expression
+      );
 
-    const isHandledExpression = handledExpressions.find((hexpr) => expr === hexpr);
-
-    resultExpression = binaryExpression("+", resultExpression, isHandledExpression ? expr.expression as Expression : exprWithChecks);
+      resultExpression = binaryExpression("+", resultExpression, preparedExpr);
+    }
   });
 
   return resultExpression;
@@ -265,7 +262,19 @@ const visitor: Visitor<TSXTPluginOptions> = {
           }());
 
           if (typeof globalThis.__tsxt__ === "undefined") {
-            globalThis.__tsxt__ = { indent: 0 };
+            const prepareValue = (expr) => {
+              if (Array.isArray(expr)) {
+                return expr.join(''); 
+              } else if (expr === false) {
+                return '';
+              } else if (typeof expr !== 'string') {
+                throw new Error(\`Value '\${expr}' in not a string\`);
+              } else {
+                return expr.length > 0 ? expr + '\\n' : ''; 
+              }
+            }
+
+            globalThis.__tsxt__ = { indent: 0, prepareValue };
           }
         `) as Statement[];
 
