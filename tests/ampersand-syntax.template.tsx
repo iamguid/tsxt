@@ -5,5 +5,6 @@ export default () => (
     {true && 'a'}
     {true && 'b'}
     {false && 'c'}
+    {true && 'd'}
   </templ>
 );

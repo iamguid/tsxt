@@ -7,6 +7,6 @@ export default (ctx: Context) => (
       .map((item) => (
         <templ>{`item "${item.name}" has value "${item.value}";`}</templ>
       ))
-      .join("")}
+    }
   </templ>
 );

@@ -42,6 +42,8 @@ interface ObjectArgs {
   value: StringLiteral | Expression;
 }
 
+const handledExpressions: any [] = [];
+
 const buildResultExpression = (
   path: NodePath<JSXElement>,
   state: TSXTPluginOptions
@@ -49,7 +51,7 @@ const buildResultExpression = (
   const concationationExpressions = path.node.children
     .filter((child) => isJSXExpressionContainer(child))
     .map((child) => child as JSXExpressionContainer)
-    .filter((child) => isExpression(child.expression));
+    .filter((child) => isExpression(child.expression))
 
   let resultExpression: BinaryExpression | Expression = stringLiteral("");
 
@@ -68,9 +70,8 @@ const buildResultExpression = (
     ) as Statement as ExpressionStatement;
     const spased = isLiteral ? spaceExpr.expression : stringLiteral("");
 
-    const exprWithChecks = isLiteral
-      ? binaryExpression("+", spased, expr.expression as Expression)
-      : (
+    const exprWithChecks = binaryExpression("+", spased, 
+      (
           template.ast(
             `(() => {
               const expr = ${generate(expr.expression).code};
@@ -79,19 +80,17 @@ const buildResultExpression = (
               } else if (expr === false) {
                 return '';
               } else if (typeof expr !== 'string') {
-                throw new Error(\`Value '\${expr}' in not valid\`);
+                throw new Error(\`Value '\${expr}' in not a string\`);
               } else {
-                return expr; 
+                return expr.length > 0 ? expr + '\\n' : ''; 
               }
             })()`
           ) as Statement as ExpressionStatement
-        ).expression;
+        ).expression);
 
-    const lined = isLiteral
-      ? binaryExpression("+", exprWithChecks, stringLiteral("\n"))
-      : exprWithChecks;
+    const isHandledExpression = handledExpressions.find((hexpr) => expr === hexpr);
 
-    resultExpression = binaryExpression("+", resultExpression, lined);
+    resultExpression = binaryExpression("+", resultExpression, isHandledExpression ? expr.expression as Expression : exprWithChecks);
   });
 
   return resultExpression;
@@ -102,20 +101,23 @@ const handleJSXTemplElementExit = (
   state: TSXTPluginOptions
 ) => {
   const resultExpression = buildResultExpression(path, state);
+  handledExpressions.push(resultExpression);
   path.replaceWith(resultExpression);
 };
 
 const handleJSXLnElementEnter = (path: NodePath<JSXElement>) => {
-  path.replaceWith(jsxExpressionContainer(stringLiteral("")));
+  const resultExpression = jsxExpressionContainer(stringLiteral("\n"));
+  handledExpressions.push(resultExpression);
+  path.replaceWith(resultExpression);
 };
 
 const handleJSXIndentElementEnter = (path: NodePath<JSXElement>) => {
   const incrementIndentTempl = template.ast(
     `(() => { globalThis.__tsxt__.indent++; return ""; })()`
   ) as Statement as ExpressionStatement;
-  path.node.children.unshift(
-    jsxExpressionContainer(incrementIndentTempl.expression)
-  );
+  const resultExpression = jsxExpressionContainer(incrementIndentTempl.expression)
+  handledExpressions.push(resultExpression);
+  path.node.children.unshift(resultExpression);
 };
 
 const handleJSXIndentElementExit = (
@@ -132,7 +134,10 @@ const handleJSXIndentElementExit = (
     decrementIndentTempl.expression
   );
 
-  path.replaceWith(jsxExpressionContainer(indentExpression));
+  const resultExpressionContainer = jsxExpressionContainer(indentExpression);
+  handledExpressions.push(resultExpressionContainer)
+
+  path.replaceWith(resultExpressionContainer);
 };
 
 const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
@@ -215,14 +220,16 @@ const handleJSXCustomElementExit = (path: NodePath<JSXElement>) => {
 
   const elementName = getJSXElementName(path.node);
 
-  path.replaceWith(
-    jsxExpressionContainer(
-      callExpression(identifier(elementName), [
-        paramsObjectExpression,
-        childrenArrayExpression,
-      ])
-    )
+  const resultExpression = jsxExpressionContainer(
+    callExpression(identifier(elementName), [
+      paramsObjectExpression,
+      childrenArrayExpression,
+    ])
   );
+
+  handledExpressions.push(resultExpression);
+
+  path.replaceWith(resultExpression);
 };
 
 export const handlers: Record<string, Handler<JSXElement>> = {

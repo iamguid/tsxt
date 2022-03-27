@@ -1,11 +1,11 @@
 import "../dist-lib/src/index";
 
-function recursive(ctx: string, currentDepth: number, depth: number) {
+function RecursiveTempl({ctx, currentDepth, depth}: {ctx: string, currentDepth: number, depth: number}) {
   if (currentDepth < depth) {
     return (
       <templ>
         {`{`}
-        <indent>{recursive(ctx, ++currentDepth, depth)}</indent>
+        <indent><RecursiveTempl ctx={ctx} currentDepth={++currentDepth} depth={depth}/></indent>
         {`}`}
       </templ>
     );
@@ -14,6 +14,8 @@ function recursive(ctx: string, currentDepth: number, depth: number) {
   return <templ>{`Hello ${ctx}`}</templ>;
 }
 
-export default function (ctx: string) {
-  return recursive(ctx, 0, 3);
-}
+export default (ctx: string) => (
+  <templ>
+    <RecursiveTempl ctx={ctx} currentDepth={0} depth={3}/>
+  </templ>
+);
