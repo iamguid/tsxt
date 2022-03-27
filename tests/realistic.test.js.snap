@@ -10,7 +10,6 @@ import * a from \\"./a\\";
 import * b from \\"./b\\";
 import * c from \\"./c\\";
 
-
 export interface ISomeClassName {
     methodA: (request: InputType, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<OutputType>;
     methodB: (request: InputType, metadata: grpcWeb.Metadata) => Promise<OutputType>;

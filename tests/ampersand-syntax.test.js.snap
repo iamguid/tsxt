@@ -3,6 +3,6 @@
 exports[`template generates correctly 1`] = `
 "a
 b
-d
+    d
 "
 `;
