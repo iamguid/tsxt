@@ -1,7 +1,3 @@
 import "../dist-lib/src/index";
 
-export default () => (
-  <templ>
-    {undefined}
-  </templ>
-);
+export default () => <templ>{undefined}</templ>;

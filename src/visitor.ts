@@ -42,7 +42,7 @@ interface ObjectArgs {
   value: StringLiteral | Expression;
 }
 
-const handledExpressions: any [] = [];
+const handledExpressions: any[] = [];
 
 const buildResultExpression = (
   path: NodePath<JSXElement>,
@@ -51,23 +51,30 @@ const buildResultExpression = (
   const concationationExpressions = path.node.children
     .filter((child) => isJSXExpressionContainer(child))
     .map((child) => child as JSXExpressionContainer)
-    .filter((child) => isExpression(child.expression))
+    .filter((child) => isExpression(child.expression));
 
   let resultExpression: BinaryExpression | Expression = stringLiteral("");
 
   concationationExpressions.forEach((expr) => {
-    const isHandledExpression = handledExpressions.find((hexpr) => expr === hexpr);
+    const isHandledExpression = handledExpressions.find(
+      (hexpr) => expr === hexpr
+    );
 
     if (isHandledExpression) {
-      resultExpression = binaryExpression("+", resultExpression, expr.expression as Expression);
+      resultExpression = binaryExpression(
+        "+",
+        resultExpression,
+        expr.expression as Expression
+      );
     } else {
-      const preparedExpr = (template.ast(
-            `(() => {
+      const preparedExpr = (
+        template.ast(
+          `(() => {
               const expr = ${generate(expr.expression).code};
               return globalThis.__tsxt__.prepareValue(expr);
             })()`
-          ) as Statement as ExpressionStatement
-        ).expression
+        ) as Statement as ExpressionStatement
+      ).expression;
 
       resultExpression = binaryExpression("+", resultExpression, preparedExpr);
     }
@@ -95,7 +102,9 @@ const handleJSXIndentElementEnter = (path: NodePath<JSXElement>) => {
   const incrementIndentTempl = template.ast(
     `(() => { globalThis.__tsxt__.indent++; return ""; })()`
   ) as Statement as ExpressionStatement;
-  const resultExpression = jsxExpressionContainer(incrementIndentTempl.expression)
+  const resultExpression = jsxExpressionContainer(
+    incrementIndentTempl.expression
+  );
   handledExpressions.push(resultExpression);
   path.node.children.unshift(resultExpression);
 };
@@ -115,7 +124,7 @@ const handleJSXIndentElementExit = (
   );
 
   const resultExpressionContainer = jsxExpressionContainer(indentExpression);
-  handledExpressions.push(resultExpressionContainer)
+  handledExpressions.push(resultExpressionContainer);
 
   path.replaceWith(resultExpressionContainer);
 };

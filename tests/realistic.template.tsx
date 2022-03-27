@@ -11,11 +11,9 @@ const ImportsTmpl = (
     {children}
     <ln />
 
-    {imports
-      .map((imprt) => (
-        <templ>{`import * ${imprt.name} from "${imprt.path}";`}</templ>
-      ))
-    }
+    {imports.map((imprt) => (
+      <templ>{`import * ${imprt.name} from "${imprt.path}";`}</templ>
+    ))}
   </templ>
 );
 
