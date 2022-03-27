@@ -55,36 +55,19 @@ const buildResultExpression = (
 
   let resultExpression: BinaryExpression | Expression = stringLiteral("");
 
-  const indentSymbol =
-    state.opts.indentType === "space"
-      ? String.fromCharCode(32)
-      : String.fromCharCode(9);
-
   concationationExpressions.forEach((expr) => {
     const isHandledExpression = handledExpressions.find((hexpr) => expr === hexpr);
 
     if (isHandledExpression) {
       resultExpression = binaryExpression("+", resultExpression, expr.expression as Expression);
     } else {
-      const isLiteral =
-        expr.expression.type === "TemplateLiteral" ||
-        expr.expression.type === "StringLiteral";
-
-      const spaceExpr = template.ast(
-        `"${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize})`
-      ) as Statement as ExpressionStatement;
-      const spased = isLiteral ? spaceExpr.expression : stringLiteral("");
-
-      const preparedExpr = binaryExpression("+", spased, 
-        (
-          template.ast(
+      const preparedExpr = (template.ast(
             `(() => {
               const expr = ${generate(expr.expression).code};
               return globalThis.__tsxt__.prepareValue(expr);
             })()`
           ) as Statement as ExpressionStatement
         ).expression
-      );
 
       resultExpression = binaryExpression("+", resultExpression, preparedExpr);
     }
@@ -247,6 +230,11 @@ const visitor: Visitor<TSXTPluginOptions> = {
     enter: (path: NodePath<Program>, state) => {
       const isTemplate = state.filename!.endsWith("template.tsx");
 
+      const indentSymbol =
+        state.opts.indentType === "space"
+          ? String.fromCharCode(32)
+          : String.fromCharCode(9);
+
       if (isTemplate) {
         const header = template.ast(`
           (function() {
@@ -270,7 +258,11 @@ const visitor: Visitor<TSXTPluginOptions> = {
               } else if (typeof expr !== 'string') {
                 throw new Error(\`Value '\${expr}' in not a string\`);
               } else {
-                return expr.length > 0 ? expr + '\\n' : ''; 
+                if (expr.length > 0) {
+                  return "${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize}) + expr + '\\n';
+                } else {
+                  return '';
+                }
               }
             }
 

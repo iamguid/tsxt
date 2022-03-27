@@ -15,7 +15,7 @@ const ImportsTmpl = (
       .map((imprt) => (
         <templ>{`import * ${imprt.name} from "${imprt.path}";`}</templ>
       ))
-      .join("")}
+    }
   </templ>
 );
 
