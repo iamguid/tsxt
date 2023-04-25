@@ -51,28 +51,24 @@ function compile(rootDir, outDir) {
     const resultOptions = {
         ...exports.compileOptions,
         rootDir,
-        outDir
+        outDir,
     };
     const createdFiles = {};
     const host = typescript_1.default.createCompilerHost(resultOptions);
-    host.writeFile = (fileName, contents) => createdFiles[fileName] = contents;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const files = Array.from(walkByFiles(rootDir))
-        .filter(file => file.endsWith('.template.tsx'));
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    host.writeFile = (fileName, contents) => (createdFiles[fileName] = contents);
+    const files = Array.from(walkByFiles(rootDir)).filter((file) => file.endsWith(".template.tsx"));
     if (!fs.existsSync(outDir)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         fs.mkdirSync(outDir);
     }
     const program = typescript_1.default.createProgram(files, resultOptions, host);
     const emitResult = program.emit();
     Object.entries(createdFiles)
-        .filter(([file]) => file.endsWith('.d.ts'))
+        .filter(([file]) => file.endsWith(".d.ts"))
         .forEach(([file, content]) => {
         fs.writeFileSync(file, content, "utf8");
     });
     Object.entries(createdFiles)
-        .filter(([file]) => file.endsWith('.jsx'))
+        .filter(([file]) => file.endsWith(".jsx"))
         .forEach(([file, content]) => {
         const babelResult = babel.transformSync(content, {
             presets: ["@babel/preset-env", "@babel/preset-react"],
@@ -80,23 +76,22 @@ function compile(rootDir, outDir) {
                 [
                     "tsxt-core/dist/src/index.js",
                     {
-                        "indentType": "space",
-                        "indentSize": 4
-                    }
-                ]
-            ]
+                        indentType: "space",
+                        indentSize: 4,
+                    },
+                ],
+            ],
         });
         if (babelResult?.code ?? false) {
-            fs.writeFileSync(file.replace(/\.jsx$/g, ".js"), babelResult?.code ?? '', "utf8");
+            fs.writeFileSync(file.replace(/\.jsx$/g, ".js"), babelResult?.code ?? "", "utf8");
         }
     });
     const allDiagnostics = typescript_1.default
         .getPreEmitDiagnostics(program)
         .concat(emitResult.diagnostics);
-    allDiagnostics.forEach(diagnostic => {
+    allDiagnostics.forEach((diagnostic) => {
         if (diagnostic.file) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const { line, character } = typescript_1.default.getLineAndCharacterOfPosition(diagnostic.file, diagnostic.start);
+            const { line, character } = typescript_1.default.getLineAndCharacterOfPosition(diagnostic.file, diagnostic.start ?? 0);
             const message = typescript_1.default.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
             console.log(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
         }

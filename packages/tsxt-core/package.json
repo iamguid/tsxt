@@ -1,11 +1,10 @@
 {
   "name": "tsxt-core",
-  "version": "1.5.1",
+  "version": "0.0.1",
   "description": "JSX based template engine with types",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "homepage": "https://github.com/iamguid/tsxt",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/iamguid/tsxt"
@@ -35,9 +34,7 @@
     "@babel/preset-env": "7.21.4",
     "@babel/preset-typescript": "7.21.4",
     "@babel/traverse": "7.21.4",
-    "@babel/types": "7.21.4",
-    "@typescript-eslint/eslint-plugin": "5.59.0",
-    "@typescript-eslint/parser": "5.59.0"
+    "@babel/types": "7.21.4"
   },
   "devDependencies": {
     "@babel/cli": "7.21.0",
@@ -48,10 +45,7 @@
     "@types/babel__traverse": "7.18.3",
     "@types/jest": "^29.5.1",
     "@types/node": "18.15.13",
-    "eslint": "8.39.0",
-    "eslint-config-prettier": "8.8.0",
     "jest": "29.5.0",
-    "prettier": "2.8.7",
     "ts-jest": "29.1.0",
     "typescript": "5.0.4"
   }
