@@ -228,50 +228,46 @@ export const handlers: Record<string, Handler<JSXElement>> = {
 const visitor: Visitor<TSXTPluginOptions> = {
   Program: {
     enter: (path: NodePath<Program>, state) => {
-      const isTemplate = state.filename?.endsWith("template.tsx") ?? false;
-
       const indentSymbol =
         state.opts.indentType === "space"
           ? String.fromCharCode(32)
           : String.fromCharCode(9);
 
-      if (isTemplate) {
-        const header = template.ast(`
-          (function() {
-            if (typeof globalThis === 'object') return;
-            Object.defineProperty(Object.prototype, '__magic__', {
-              get: function() {
-                return this;
-              },
-              configurable: true
-            });
-            __magic__.globalThis = __magic__;
-            delete Object.prototype.__magic__;
-          }());
+      const header = template.ast(`
+        (function() {
+          if (typeof globalThis === 'object') return;
+          Object.defineProperty(Object.prototype, '__magic__', {
+            get: function() {
+              return this;
+            },
+            configurable: true
+          });
+          __magic__.globalThis = __magic__;
+          delete Object.prototype.__magic__;
+        }());
 
-          if (typeof globalThis.__tsxt__ === "undefined") {
-            const prepareValue = (expr) => {
-              if (Array.isArray(expr)) {
-                return expr.join(''); 
-              } else if (expr === false) {
-                return '';
-              } else if (typeof expr !== 'string') {
-                throw new Error(\`Value '\${expr}' in not a string\`);
+        if (typeof globalThis.__tsxt__ === "undefined") {
+          const prepareValue = (expr) => {
+            if (Array.isArray(expr)) {
+              return expr.join(''); 
+            } else if (expr === false) {
+              return '';
+            } else if (typeof expr !== 'string') {
+              throw new Error(\`Value '\${expr}' in not a string\`);
+            } else {
+              if (expr.length > 0) {
+                return "${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize}) + expr + '\\n';
               } else {
-                if (expr.length > 0) {
-                  return "${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize}) + expr + '\\n';
-                } else {
-                  return '';
-                }
+                return '';
               }
             }
-
-            globalThis.__tsxt__ = { indent: 0, prepareValue };
           }
-        `) as Statement[];
 
-        path.node.body.unshift(...header);
-      }
+          globalThis.__tsxt__ = { indent: 0, prepareValue };
+        }
+      `) as Statement[];
+
+      path.node.body.unshift(...header);
     },
   },
   JSXElement: {

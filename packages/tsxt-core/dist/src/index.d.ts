@@ -2,9 +2,9 @@ import * as babel from "@babel/core";
 declare global {
     namespace JSX {
         interface IntrinsicElements {
-            templ: {};
-            indent: {};
-            ln: {};
+            templ: object;
+            indent: object;
+            ln: object;
         }
     }
 }

@@ -9,7 +9,7 @@ const generator_1 = __importDefault(require("@babel/generator"));
 const types_1 = require("@babel/types");
 const helpers_1 = require("./helpers");
 const handledExpressions = [];
-const buildResultExpression = (path, state) => {
+const buildResultExpression = (path) => {
     const concationationExpressions = path.node.children
         .filter((child) => (0, types_1.isJSXExpressionContainer)(child))
         .map((child) => child)
@@ -30,8 +30,8 @@ const buildResultExpression = (path, state) => {
     });
     return resultExpression;
 };
-const handleJSXTemplElementExit = (path, state) => {
-    const resultExpression = buildResultExpression(path, state);
+const handleJSXTemplElementExit = (path) => {
+    const resultExpression = buildResultExpression(path);
     handledExpressions.push(resultExpression);
     path.replaceWith(resultExpression);
 };
@@ -46,9 +46,9 @@ const handleJSXIndentElementEnter = (path) => {
     handledExpressions.push(resultExpression);
     path.node.children.unshift(resultExpression);
 };
-const handleJSXIndentElementExit = (path, state) => {
+const handleJSXIndentElementExit = (path) => {
     const decrementIndentTempl = template_1.default.ast(`(() => { globalThis.__tsxt__.indent--; return ""; })()`);
-    const resultExpression = buildResultExpression(path, state);
+    const resultExpression = buildResultExpression(path);
     const indentExpression = (0, types_1.binaryExpression)("+", resultExpression, decrementIndentTempl.expression);
     const resultExpressionContainer = (0, types_1.jsxExpressionContainer)(indentExpression);
     handledExpressions.push(resultExpressionContainer);
@@ -122,46 +122,43 @@ exports.handlers = {
 const visitor = {
     Program: {
         enter: (path, state) => {
-            const isTemplate = state.filename.endsWith("template.tsx");
             const indentSymbol = state.opts.indentType === "space"
                 ? String.fromCharCode(32)
                 : String.fromCharCode(9);
-            if (isTemplate) {
-                const header = template_1.default.ast(`
-          (function() {
-            if (typeof globalThis === 'object') return;
-            Object.defineProperty(Object.prototype, '__magic__', {
-              get: function() {
-                return this;
-              },
-              configurable: true
-            });
-            __magic__.globalThis = __magic__;
-            delete Object.prototype.__magic__;
-          }());
+            const header = template_1.default.ast(`
+        (function() {
+          if (typeof globalThis === 'object') return;
+          Object.defineProperty(Object.prototype, '__magic__', {
+            get: function() {
+              return this;
+            },
+            configurable: true
+          });
+          __magic__.globalThis = __magic__;
+          delete Object.prototype.__magic__;
+        }());
 
-          if (typeof globalThis.__tsxt__ === "undefined") {
-            const prepareValue = (expr) => {
-              if (Array.isArray(expr)) {
-                return expr.join(''); 
-              } else if (expr === false) {
-                return '';
-              } else if (typeof expr !== 'string') {
-                throw new Error(\`Value '\${expr}' in not a string\`);
+        if (typeof globalThis.__tsxt__ === "undefined") {
+          const prepareValue = (expr) => {
+            if (Array.isArray(expr)) {
+              return expr.join(''); 
+            } else if (expr === false) {
+              return '';
+            } else if (typeof expr !== 'string') {
+              throw new Error(\`Value '\${expr}' in not a string\`);
+            } else {
+              if (expr.length > 0) {
+                return "${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize}) + expr + '\\n';
               } else {
-                if (expr.length > 0) {
-                  return "${indentSymbol}".repeat(globalThis.__tsxt__.indent * ${state.opts.indentSize}) + expr + '\\n';
-                } else {
-                  return '';
-                }
+                return '';
               }
             }
-
-            globalThis.__tsxt__ = { indent: 0, prepareValue };
           }
-        `);
-                path.node.body.unshift(...header);
-            }
+
+          globalThis.__tsxt__ = { indent: 0, prepareValue };
+        }
+      `);
+            path.node.body.unshift(...header);
         },
     },
     JSXElement: {
