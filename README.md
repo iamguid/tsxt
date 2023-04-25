@@ -16,6 +16,16 @@ yarn
 $ yarn add --dev tsxt
 ```
 
+Also you should add tsxt to your tsconfig.json file, example configuration is:
+
+```json
+{
+  "compilerOptions": {
+    "types": ["tsxt"]
+  }
+}
+```
+
 ## How It Works
 
 TSXT syntax is fully compatible with JSX syntax, that means you can use `eslint` and `prettier` JSX plugins to increase the quality of your code. Also it means that you can see all type errors in template.
