@@ -7,16 +7,14 @@ TSXT is template engine for strongly typed JSX templates using TypeScript. The m
 npm
 
 ```bash
-$ npm i babel-plugin-tsxt @babel/cli @babel/core @babel/preset-typescript @babel/preset-env
+$ npm i --save-dev tsxt
 ```
 
 yarn
 
 ```bash
-$ yarn add babel-plugin-tsxt @babel/cli @babel/core @babel/preset-typescript @babel/preset-env
+$ yarn add --dev tsxt
 ```
-
-Then you can use it as simple babel-plugin.
 
 ## How It Works
 
@@ -40,35 +38,10 @@ function _default(ctx) {
 
 You can find more examples in [tests](https://github.com/iamguid/tsxt/tree/main/tests) folder
 
-## Usage
-
-Babel config should contain `@babel/preset-typescript` preset for typescript support and `@babel/preset-env` if you want to run it in different environments.
-Also you can use `webpack` to run templates in browser.
-
-Example babel.config.json:
-
-```json
-{
-  "presets": [
-    ["@babel/preset-env", { "targets": { "node": "current" } }],
-    "@babel/preset-typescript"
-  ],
-  "plugins": [
-    [
-      "babel-plugin-tsxt",
-      {
-        "indentType": "space",
-        "indentSize": 4
-      }
-    ]
-  ]
-}
-```
-
-Then you can compile your tsx templates, for example with command:
+You can compile your tsx templates, for example with command:
 
 ```bash
-$ babel --config-file ./templates/babel.config.json --extensions .tsx,.ts --out-dir ./templates/dist ./templates
+$ tsxt ./templates ./compiled-templates
 ```
 
 ## Tags
