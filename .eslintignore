@@ -1,5 +1,4 @@
-packages/tsxt-cli/dist
-packages/tsxt-cli/dist-templates
-packages/tsxt-core/dist
-packages/tsxt-core/dist-tests
+dist
+dist-tests
+compiled-templates
 node_modules

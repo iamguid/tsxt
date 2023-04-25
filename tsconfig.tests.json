@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["./tests", "./compiled-templates"],
+  "compilerOptions": {
+    "rootDirs": ["./tests", "./compiled-templates"],
+    "outDir": "./dist-tests",
+    "types": ["node", "jest"]
+  }
+}

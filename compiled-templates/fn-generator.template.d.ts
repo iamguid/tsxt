@@ -1,0 +1,8 @@
+export interface Context {
+    methodName: string;
+    inputType: string;
+    outputType: string;
+}
+export declare const ctx: Context;
+declare const _default: (ctx: Context) => any;
+export default _default;

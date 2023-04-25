@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["./src/bin", "./src/plugin"],
+  "compilerOptions": {
+    "rootDirs": ["./src/bin", "./src/plugin"],
+    "outDir": "./dist",
+    "types": ["node"]
+  }
+}
