@@ -22,9 +22,6 @@
 
 .idea
 .vscode
-
-dist-lib
-dist-tests
-node_modules
-
 .DS_Store
+
+node_modules

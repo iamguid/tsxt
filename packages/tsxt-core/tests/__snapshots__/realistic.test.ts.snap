@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`template generates correctly 1`] = `
+"// "GENERATED CODE -- DO NOT EDIT!"
+
+import * as grpcWeb from "grpc-web"
+import * jspb from "google-protobuf"
+
+import * a from "./a";
+import * b from "./b";
+import * c from "./c";
+
+export interface ISomeClassName {
+    methodA: (request: InputType, metadata: grpcWeb.Metadata) => grpcWeb.ClientReadableStream<OutputType>;
+    methodB: (request: InputType, metadata: grpcWeb.Metadata) => Promise<OutputType>;
+}
+
+export class SomeClassName implements ISomeClassName {
+    public methodA(request: InputType, metadata: grpcWeb.Metadata): grpcWeb.ClientReadableStream<OutputType> {
+        return void;
+    }
+    public methodB(request: InputType, metadata: grpcWeb.Metadata): Promise<OutputType> {
+        return void;
+    }
+}
+
+"
+`;

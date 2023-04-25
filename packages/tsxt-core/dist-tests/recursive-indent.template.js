@@ -1,0 +1,73 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+(function () {
+  if (typeof globalThis === 'object') return;
+  Object.defineProperty(Object.prototype, '__magic__', {
+    get: function () {
+      return this;
+    },
+    configurable: true
+  });
+  __magic__.globalThis = __magic__;
+  delete Object.prototype.__magic__;
+})();
+if (typeof globalThis.__tsxt__ === "undefined") {
+  const prepareValue = expr => {
+    if (Array.isArray(expr)) {
+      return expr.join('');
+    } else if (expr === false) {
+      return '';
+    } else if (typeof expr !== 'string') {
+      throw new Error(`Value '${expr}' in not a string`);
+    } else {
+      if (expr.length > 0) {
+        return " ".repeat(globalThis.__tsxt__.indent * 4) + expr + '\n';
+      } else {
+        return '';
+      }
+    }
+  };
+  globalThis.__tsxt__ = {
+    indent: 0,
+    prepareValue
+  };
+}
+function RecursiveTempl({
+  ctx,
+  currentDepth,
+  depth
+}) {
+  if (currentDepth < depth) {
+    return "" + (() => {
+      const expr = `{`;
+      return globalThis.__tsxt__.prepareValue(expr);
+    })() + ("" + (() => {
+      globalThis.__tsxt__.indent++;
+      return "";
+    })() + RecursiveTempl({
+      "ctx": ctx,
+      "currentDepth": ++currentDepth,
+      "depth": depth
+    }, []) + (() => {
+      globalThis.__tsxt__.indent--;
+      return "";
+    })()) + (() => {
+      const expr = `}`;
+      return globalThis.__tsxt__.prepareValue(expr);
+    })();
+  }
+  return "" + (() => {
+    const expr = `Hello ${ctx}`;
+    return globalThis.__tsxt__.prepareValue(expr);
+  })();
+}
+var _default = ctx => "" + RecursiveTempl({
+  "ctx": ctx,
+  "currentDepth": 0,
+  "depth": 3
+}, []);
+exports.default = _default;

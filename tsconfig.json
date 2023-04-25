@@ -8,15 +8,9 @@
     "declaration": true,
     "sourceMap": true,
     "composite": true,
-    "sourceRoot": "./src",
-    "outDir": "./dist-lib",
     "strict": true,
     "moduleResolution": "node",
-    "typeRoots": ["node_modules/@types", "./types"],
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  },
-  "exclude": ["node_modules", "tests", "dist-lib", "dist-tests"]
+    "allowSyntheticDefaultImports": true
+  }
 }
