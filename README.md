@@ -63,3 +63,6 @@ TSXT provides three different tags (`templ`, `indent`, `ln`)
 `indent` - simple tag that tells TSXT to increase indent for all nested JSXExpressionContainers. `indent` as well as `templ` transforms all children to one expression.
 
 `ln` - another simple tag that tells TSXT to insert JSXExpressionContainer with string literal that contains `\n`.
+
+## Links
+Medium article - https://medium.com/@iam.guid/first-typescript-jsx-based-template-engine-for-code-generation-d9be0275e6d6
