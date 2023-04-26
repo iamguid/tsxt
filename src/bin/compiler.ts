@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import ts, { JsxEmit } from "typescript";
+import * as ts from "typescript";
 import * as babel from "@babel/core";
 
 function* walkByFiles(rootDir: string): Generator<string> {
@@ -15,27 +15,49 @@ function* walkByFiles(rootDir: string): Generator<string> {
   }
 }
 
-export const compileOptions: ts.CompilerOptions = {
-  jsx: JsxEmit.Preserve,
-  target: ts.ScriptTarget.ESNext,
-  module: ts.ModuleKind.CommonJS,
-  declaration: true,
-  types: ["node"],
+export const requiredCompilerOptions: ts.CompilerOptions = {
+  jsx: ts.JsxEmit.Preserve,
 };
 
-export function compile(rootDir: string, outDir: string): void {
-  const resultOptions = {
-    ...compileOptions,
-    rootDir,
-    outDir,
-  };
+export function compile(
+  projectFile: string | null,
+  templatesDir: string,
+  outDir: string
+): void {
+  let resultOptions: ts.CompilerOptions;
+
+  if (projectFile === null) {
+    projectFile =
+      ts.findConfigFile(templatesDir, (fileName) => fs.existsSync(fileName)) ??
+      null;
+  }
+
+  if (projectFile) {
+    const projectFileContent = fs.readFileSync(projectFile, "utf-8");
+    const projectConfig = ts.parseConfigFileTextToJson(
+      projectFile,
+      projectFileContent
+    );
+
+    resultOptions = {
+      ...projectConfig.config,
+      ...requiredCompilerOptions,
+      outDir,
+    };
+  } else {
+    resultOptions = {
+      ...requiredCompilerOptions,
+      rootDir: templatesDir,
+      outDir,
+    };
+  }
 
   const createdFiles: Record<string, string> = {};
   const host = ts.createCompilerHost(resultOptions);
   host.writeFile = (fileName: string, contents: string) =>
     (createdFiles[fileName] = contents);
 
-  const files = Array.from(walkByFiles(rootDir)).filter((file) =>
+  const files = Array.from(walkByFiles(templatesDir)).filter((file) =>
     file.endsWith(".template.tsx")
   );
 
@@ -102,6 +124,10 @@ export function compile(rootDir: string, outDir: string): void {
   });
 
   const exitCode = emitResult.emitSkipped ? 1 : 0;
-  console.log(`Process exiting with code '${exitCode}'.`);
+
+  if (exitCode !== 0) {
+    console.log(`Process exiting with code '${exitCode}'.`);
+  }
+
   process.exit(exitCode);
 }

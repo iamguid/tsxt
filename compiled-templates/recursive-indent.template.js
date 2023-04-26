@@ -36,10 +36,10 @@ if (typeof globalThis.__tsxt__ === "undefined") {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-function RecursiveTempl(_ref) {
-  var ctx = _ref.ctx,
-    currentDepth = _ref.currentDepth,
-    depth = _ref.depth;
+function RecursiveTempl(_a) {
+  var ctx = _a.ctx,
+    currentDepth = _a.currentDepth,
+    depth = _a.depth;
   if (currentDepth < depth) {
     return "" + function () {
       var expr = "{";

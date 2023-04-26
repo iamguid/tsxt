@@ -65,4 +65,5 @@ TSXT provides three different tags (`templ`, `indent`, `ln`)
 `ln` - another simple tag that tells TSXT to insert JSXExpressionContainer with string literal that contains `\n`.
 
 ## Links
+
 Medium article - https://medium.com/@iam.guid/first-typescript-jsx-based-template-engine-for-code-generation-d9be0275e6d6

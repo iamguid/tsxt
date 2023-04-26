@@ -36,10 +36,10 @@ if (typeof globalThis.__tsxt__ === "undefined") {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var CustomWithArgsTmpl = function CustomWithArgsTmpl(_ref) {
-  var arg1 = _ref.arg1,
-    arg2 = _ref.arg2,
-    arg3 = _ref.arg3;
+var CustomWithArgsTmpl = function CustomWithArgsTmpl(_a) {
+  var arg1 = _a.arg1,
+    arg2 = _a.arg2,
+    arg3 = _a.arg3;
   return "" + function () {
     var expr = arg1;
     return globalThis.__tsxt__.prepareValue(expr);

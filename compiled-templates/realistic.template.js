@@ -70,8 +70,8 @@ var HeaderTmpl = function HeaderTmpl() {
     return globalThis.__tsxt__.prepareValue(expr);
   }();
 };
-var ImportsTmpl = function ImportsTmpl(_ref, children) {
-  var imports = _ref.imports;
+var ImportsTmpl = function ImportsTmpl(_a, children) {
+  var imports = _a.imports;
   return "" + function () {
     var expr = children;
     return globalThis.__tsxt__.prepareValue(expr);
@@ -85,16 +85,16 @@ var ImportsTmpl = function ImportsTmpl(_ref, children) {
     return globalThis.__tsxt__.prepareValue(expr);
   }();
 };
-var ClientTmpl = function ClientTmpl(_ref2) {
-  var client = _ref2.client;
+var ClientTmpl = function ClientTmpl(_a) {
+  var client = _a.client;
   return "" + ClientInterfaceTmpl({
     "client": client
   }, []) + "\n" + ClientClassTmpl({
     "client": client
   }, []);
 };
-var ClientInterfaceTmpl = function ClientInterfaceTmpl(_ref3) {
-  var client = _ref3.client;
+var ClientInterfaceTmpl = function ClientInterfaceTmpl(_a) {
+  var client = _a.client;
   return "" + function () {
     var expr = "export interface ".concat(client.interfaceClassName, " {");
     return globalThis.__tsxt__.prepareValue(expr);
@@ -120,8 +120,8 @@ var ClientInterfaceTmpl = function ClientInterfaceTmpl(_ref3) {
     return globalThis.__tsxt__.prepareValue(expr);
   }();
 };
-var ClientClassTmpl = function ClientClassTmpl(_ref4) {
-  var client = _ref4.client;
+var ClientClassTmpl = function ClientClassTmpl(_a) {
+  var client = _a.client;
   return "" + function () {
     var expr = "export class ".concat(client.clientClassName, " implements ").concat(client.interfaceClassName, " {");
     return globalThis.__tsxt__.prepareValue(expr);
@@ -171,8 +171,8 @@ var ClientClassTmpl = function ClientClassTmpl(_ref4) {
     return globalThis.__tsxt__.prepareValue(expr);
   }();
 };
-var ClientsTmpl = function ClientsTmpl(_ref5) {
-  var clients = _ref5.clients;
+var ClientsTmpl = function ClientsTmpl(_a) {
+  var clients = _a.clients;
   return "" + function () {
     var expr = clients.map(function (client) {
       return "" + ClientTmpl({

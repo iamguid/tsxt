@@ -17,6 +17,6 @@
 
     "rootDirs": ["./src/bin", "./src/plugin"],
     "outDir": "./dist",
-    "types": ["node", "jest", "./src/plugin/index.ts"]
+    "types": ["node", "jest"]
   }
 }

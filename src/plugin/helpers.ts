@@ -1,6 +1,14 @@
-import { isJSXIdentifier, isJSXNamespacedName, JSXIdentifier, JSXMemberExpression, JSXNamespacedName } from "@babel/types";
+import {
+  isJSXIdentifier,
+  isJSXNamespacedName,
+  JSXIdentifier,
+  JSXMemberExpression,
+  JSXNamespacedName,
+} from "@babel/types";
 
-export function getJSXElementName(node: JSXIdentifier | JSXNamespacedName | JSXMemberExpression): string {
+export function getJSXElementName(
+  node: JSXIdentifier | JSXNamespacedName | JSXMemberExpression
+): string {
   if (isJSXIdentifier(node)) {
     return node.name;
   } else if (isJSXNamespacedName(node)) {
@@ -9,5 +17,5 @@ export function getJSXElementName(node: JSXIdentifier | JSXNamespacedName | JSXM
     return `${node.object.name}.${node.property.name}`;
   }
 
-  throw new Error(`Unsupported syntax`)
+  throw new Error(`Unsupported syntax`);
 }

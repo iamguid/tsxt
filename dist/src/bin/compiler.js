@@ -23,10 +23,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.compile = exports.compileOptions = void 0;
+exports.compile = exports.requiredCompilerOptions = void 0;
 const fs = __importStar(require("node:fs"));
 const path = __importStar(require("node:path"));
-const typescript_1 = __importStar(require("typescript"));
+const ts = __importStar(require("typescript"));
 const babel = __importStar(require("@babel/core"));
 function* walkByFiles(rootDir) {
     const dirents = fs.readdirSync(rootDir, { withFileTypes: true });
@@ -40,27 +40,38 @@ function* walkByFiles(rootDir) {
         }
     }
 }
-exports.compileOptions = {
-    jsx: typescript_1.JsxEmit.Preserve,
-    target: typescript_1.default.ScriptTarget.ESNext,
-    module: typescript_1.default.ModuleKind.CommonJS,
-    declaration: true,
-    types: ["node"],
+exports.requiredCompilerOptions = {
+    jsx: ts.JsxEmit.Preserve,
 };
-function compile(rootDir, outDir) {
-    const resultOptions = {
-        ...exports.compileOptions,
-        rootDir,
-        outDir,
-    };
+function compile(projectFile, templatesDir, outDir) {
+    let resultOptions;
+    if (projectFile === null) {
+        projectFile = ts.findConfigFile(templatesDir, fileName => fs.existsSync(fileName)) ?? null;
+    }
+    if (projectFile) {
+        const projectFileContent = fs.readFileSync(projectFile, 'utf-8');
+        const projectConfig = ts.parseConfigFileTextToJson(projectFile, projectFileContent);
+        resultOptions = {
+            ...projectConfig.config,
+            ...exports.requiredCompilerOptions,
+            outDir,
+        };
+    }
+    else {
+        resultOptions = {
+            ...exports.requiredCompilerOptions,
+            rootDir: templatesDir,
+            outDir,
+        };
+    }
     const createdFiles = {};
-    const host = typescript_1.default.createCompilerHost(resultOptions);
+    const host = ts.createCompilerHost(resultOptions);
     host.writeFile = (fileName, contents) => (createdFiles[fileName] = contents);
-    const files = Array.from(walkByFiles(rootDir)).filter((file) => file.endsWith(".template.tsx"));
+    const files = Array.from(walkByFiles(templatesDir)).filter((file) => file.endsWith(".template.tsx"));
     if (!fs.existsSync(outDir)) {
         fs.mkdirSync(outDir);
     }
-    const program = typescript_1.default.createProgram(files, resultOptions, host);
+    const program = ts.createProgram(files, resultOptions, host);
     const emitResult = program.emit();
     Object.entries(createdFiles)
         .filter(([file]) => file.endsWith(".d.ts"))
@@ -86,21 +97,23 @@ function compile(rootDir, outDir) {
             fs.writeFileSync(file.replace(/\.jsx$/g, ".js"), babelResult?.code ?? "", "utf8");
         }
     });
-    const allDiagnostics = typescript_1.default
+    const allDiagnostics = ts
         .getPreEmitDiagnostics(program)
         .concat(emitResult.diagnostics);
     allDiagnostics.forEach((diagnostic) => {
         if (diagnostic.file) {
-            const { line, character } = typescript_1.default.getLineAndCharacterOfPosition(diagnostic.file, diagnostic.start ?? 0);
-            const message = typescript_1.default.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
+            const { line, character } = ts.getLineAndCharacterOfPosition(diagnostic.file, diagnostic.start ?? 0);
+            const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
             console.log(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
         }
         else {
-            console.log(typescript_1.default.flattenDiagnosticMessageText(diagnostic.messageText, "\n"));
+            console.log(ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"));
         }
     });
     const exitCode = emitResult.emitSkipped ? 1 : 0;
-    console.log(`Process exiting with code '${exitCode}'.`);
+    if (exitCode !== 0) {
+        console.log(`Process exiting with code '${exitCode}'.`);
+    }
     process.exit(exitCode);
 }
 exports.compile = compile;
