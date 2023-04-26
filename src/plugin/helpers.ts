@@ -1,13 +1,13 @@
-import { isJSXIdentifier, isJSXNamespacedName, JSXElement } from "@babel/types";
+import { isJSXIdentifier, isJSXNamespacedName, JSXIdentifier, JSXMemberExpression, JSXNamespacedName } from "@babel/types";
 
-export function getJSXElementName(node: JSXElement): string {
-  const nameNode = node.openingElement.name;
-
-  if (isJSXIdentifier(nameNode)) {
-    return nameNode.name;
-  } else if (isJSXNamespacedName(nameNode)) {
-    return `${nameNode.namespace.name}.${nameNode.name}`;
-  } else {
-    throw new Error(`type ${nameNode.type} not supported in jsx`);
+export function getJSXElementName(node: JSXIdentifier | JSXNamespacedName | JSXMemberExpression): string {
+  if (isJSXIdentifier(node)) {
+    return node.name;
+  } else if (isJSXNamespacedName(node)) {
+    return `${node.namespace.name}.${node.name}`;
+  } else if (isJSXIdentifier(node.object) && isJSXIdentifier(node.property)) {
+    return `${node.object.name}.${node.property.name}`;
   }
+
+  throw new Error(`Unsupported syntax`)
 }

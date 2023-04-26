@@ -1,1 +1,3 @@
-export default function (ctx: string): any;
+export default function (ctx: {
+    hello: string;
+}): any;

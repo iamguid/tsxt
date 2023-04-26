@@ -36,10 +36,9 @@ if (typeof globalThis.__tsxt__ === "undefined") {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-function default_1(ctx) {
-  return "" + function () {
-    var expr = "Hello, ".concat(ctx.hello);
-    return globalThis.__tsxt__.prepareValue(expr);
-  }();
-}
-exports["default"] = default_1;
+var simple_template_1 = require("./simple.template");
+exports["default"] = function () {
+  return "" + simple_template_1.default({
+    "hello": "Import"
+  }, []);
+};

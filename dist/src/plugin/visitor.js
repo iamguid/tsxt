@@ -99,7 +99,7 @@ const handleJSXCustomElementExit = (path) => {
         return (0, types_1.objectProperty)((0, types_1.stringLiteral)(param.name), param.value);
     }));
     const childrenArrayExpression = (0, types_1.arrayExpression)(childrenArray);
-    const elementName = (0, helpers_1.getJSXElementName)(path.node);
+    const elementName = (0, helpers_1.getJSXElementName)(path.node.openingElement.name);
     const resultExpression = (0, types_1.jsxExpressionContainer)((0, types_1.callExpression)((0, types_1.identifier)(elementName), [
         paramsObjectExpression,
         childrenArrayExpression,
@@ -163,7 +163,7 @@ const visitor = {
     },
     JSXElement: {
         enter: (path, state) => {
-            const name = `${(0, helpers_1.getJSXElementName)(path.node)}.enter`;
+            const name = `${(0, helpers_1.getJSXElementName)(path.node.openingElement.name)}.enter`;
             if (name in exports.handlers) {
                 exports.handlers[name](path, state);
             }
@@ -172,7 +172,7 @@ const visitor = {
             }
         },
         exit: (path, state) => {
-            const name = `${(0, helpers_1.getJSXElementName)(path.node)}.exit`;
+            const name = `${(0, helpers_1.getJSXElementName)(path.node.openingElement.name)}.exit`;
             if (name in exports.handlers) {
                 exports.handlers[name](path, state);
             }

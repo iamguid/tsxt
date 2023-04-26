@@ -1,3 +1,3 @@
-export default function (ctx: string) {
-  return <templ>{`Hello, ${ctx}`}</templ>;
+export default function (ctx: { hello: string }) {
+  return <templ>{`Hello, ${ctx.hello}`}</templ>;
 }
