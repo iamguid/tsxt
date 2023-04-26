@@ -2,7 +2,7 @@
   "author": "Vladislav Lebedev <iam.guid@gmail.com>",
   "license": "MIT",
   "name": "tsxt",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Template Engine with Types",
   "main": "dist/src/plugin/index.js",
   "types": "dist/src/plugin/index.d.ts",
