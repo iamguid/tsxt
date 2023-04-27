@@ -46,13 +46,19 @@ exports.requiredCompilerOptions = {
 function compile(projectFile, templatesDir, outDir) {
     let resultOptions;
     if (projectFile === null) {
-        projectFile = ts.findConfigFile(templatesDir, fileName => fs.existsSync(fileName)) ?? null;
+        projectFile =
+            ts.findConfigFile(templatesDir, (fileName) => fs.existsSync(fileName)) ??
+                null;
     }
     if (projectFile) {
-        const projectFileContent = fs.readFileSync(projectFile, 'utf-8');
-        const projectConfig = ts.parseConfigFileTextToJson(projectFile, projectFileContent);
+        const projectConfig = ts.parseJsonConfigFileContent(JSON.parse(fs.readFileSync(projectFile, "utf-8")), {
+            useCaseSensitiveFileNames: false,
+            readDirectory: ts.sys.readDirectory,
+            fileExists: ts.sys.fileExists,
+            readFile: ts.sys.readFile
+        }, path.dirname(projectFile));
         resultOptions = {
-            ...projectConfig.config,
+            ...projectConfig.options,
             ...exports.requiredCompilerOptions,
             outDir,
         };
